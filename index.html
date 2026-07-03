@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&family=Fraunces:ital,opsz,wght@1,9..144,500;1,9..144,640&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    EBA · Eco Bazar — identidade visual
@@ -54,47 +54,50 @@ img{max-width:100%;display:block}
   border-radius:9px;display:none;align-items:center;justify-content:center;border:2px solid var(--paper)}
 .cart-badge.show{display:flex}
 
-/* ===== HERO ===== */
-.hero{position:relative;overflow:hidden;
-  background:
-    radial-gradient(ellipse at 8% 0%, rgba(245,184,30,.20), transparent 46%),
-    radial-gradient(ellipse at 95% 12%, rgba(214,36,138,.14), transparent 44%),
-    radial-gradient(ellipse at 60% 110%, rgba(59,165,70,.13), transparent 52%),
-    var(--paper)}
-.hero-in{max-width:1060px;margin:0 auto;padding:54px 22px 58px;position:relative;z-index:2;
+/* ===== HERO (gradient animado + textura) ===== */
+.hero{position:relative;overflow:hidden;background:var(--paper);isolation:isolate}
+.hero::before{content:"";position:absolute;left:50%;top:50%;width:170vmax;height:170vmax;
+  margin:-85vmax 0 0 -85vmax;z-index:-1;pointer-events:none;
+  background:conic-gradient(from 0deg,
+    rgba(245,184,30,.30), rgba(238,59,69,.14), rgba(214,36,138,.22),
+    rgba(94,42,134,.20), rgba(59,165,70,.22), rgba(240,130,46,.16), rgba(245,184,30,.30));
+  filter:blur(90px) saturate(1.05);animation:heroSpin 32s linear infinite;will-change:transform}
+@keyframes heroSpin{to{transform:rotate(1turn)}}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E")}
+.hero-in{max-width:1060px;margin:0 auto;padding:54px 22px 58px;position:relative;
   display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
 @media(max-width:860px){.hero-in{grid-template-columns:1fr;padding:40px 22px 48px;gap:36px}}
-.hero .blobs{position:absolute;inset:0;pointer-events:none;opacity:.55;z-index:1}
-.hero .blobs span{position:absolute;border-radius:50%;filter:blur(1px)}
-.b1{width:14px;height:14px;background:var(--amarelo);top:14%;left:6%}
-.b2{width:10px;height:10px;background:var(--vermelho);top:22%;right:10%}
-.b3{width:18px;height:18px;background:var(--verde);bottom:16%;left:12%}
-.b4{width:9px;height:9px;background:var(--magenta);top:58%;right:6%}
 .logo-img{height:clamp(120px,22vw,168px);width:auto;margin:0 0 10px -6px;
-  filter:drop-shadow(0 8px 18px rgba(94,42,134,.16))}
+  mix-blend-mode:multiply;filter:drop-shadow(0 8px 18px rgba(94,42,134,.16))}
 @media(max-width:860px){.logo-img{margin-inline:auto}}
 .tag{font-family:'Baloo 2';font-weight:700;letter-spacing:.3em;text-transform:uppercase;
   font-size:12.5px;color:var(--magenta);margin-bottom:10px}
 .hero h1{font-family:'Baloo 2';font-weight:800;font-size:clamp(30px,5.4vw,48px);
   line-height:1.04;letter-spacing:-.01em;margin-bottom:14px}
-.hero h1 em{font-style:normal;color:var(--magenta);position:relative;white-space:nowrap}
+.hero h1 em{font-family:'Fraunces',serif;font-style:italic;font-weight:640;
+  color:var(--magenta);position:relative;white-space:nowrap;letter-spacing:0}
 .hero h1 em::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:.34em;z-index:-1;
   background:rgba(245,184,30,.55);border-radius:4px;transform:rotate(-1deg)}
 .hero p.lead{max-width:460px;color:#6f5f82;font-size:16.5px;font-weight:600;margin-bottom:18px}
 @media(max-width:860px){.hero-copy{text-align:center}.hero p.lead{margin-inline:auto}}
 .hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
 @media(max-width:860px){.hero-chips{justify-content:center}}
-.chip{font-family:'Baloo 2';font-weight:700;font-size:12.5px;padding:7px 13px;border-radius:999px;
-  display:inline-flex;align-items:center;gap:6px}
+.chip{font-family:'Baloo 2';font-weight:700;font-size:12.5px;padding:7px 14px 7px 11px;border-radius:999px;
+  display:inline-flex;align-items:center;gap:7px}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.7}
 .chip.verde{background:#e3f4e4;color:#25752e}
 .chip.roxo{background:#efe6f8;color:var(--roxo)}
 .chip.amarelo{background:#fdeecb;color:#8d6605}
 .hero-cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 @media(max-width:860px){.hero-cta{justify-content:center}}
-.btn-main{display:inline-flex;align-items:center;gap:9px;background:var(--magenta);color:#fff;
+.btn-main{display:inline-flex;align-items:center;gap:9px;color:#fff;
+  background:linear-gradient(115deg,var(--magenta),#a02f8f 55%,var(--roxo));
+  background-size:190% 100%;background-position:0% 50%;
   text-decoration:none;font-family:'Baloo 2';font-weight:700;font-size:16px;padding:15px 28px;
-  border-radius:16px;box-shadow:0 8px 20px rgba(214,36,138,.35);transition:transform .15s,box-shadow .15s,background .15s}
-.btn-main:hover{transform:translateY(-2px);background:#c11d7c;box-shadow:0 12px 26px rgba(214,36,138,.42)}
+  border-radius:16px;box-shadow:0 8px 20px rgba(214,36,138,.35);
+  transition:transform .15s,box-shadow .15s,background-position .45s ease}
+.btn-main:hover{transform:translateY(-2px);background-position:100% 50%;box-shadow:0 12px 26px rgba(148,38,134,.45)}
 .btn-ghost{display:inline-flex;align-items:center;gap:8px;color:var(--roxo);text-decoration:none;
   font-family:'Baloo 2';font-weight:700;font-size:15px;padding:14px 22px;border-radius:16px;
   border:2px solid #e4d3f2;background:rgba(255,255,255,.6);transition:border-color .15s,background .15s,transform .15s}
@@ -114,6 +117,28 @@ img{max-width:100%;display:block}
 @media(max-width:860px){
   .hero-pics{max-width:430px;margin:0 auto}
   .hero-pics .ph.p3{display:none}
+}
+
+/* ===== ESTEIRA DE FOTOS (marquee) ===== */
+.marquee{position:relative;overflow:hidden;padding:30px 0 34px;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#fffdf7,var(--creme))}
+.marquee .track{display:flex;width:max-content;animation:marquee 44s linear infinite}
+.marquee:hover .track{animation-play-state:paused}
+@keyframes marquee{to{transform:translateX(-50%)}}
+.marquee .half{display:flex;gap:20px;padding-right:20px}
+.marquee a{flex:0 0 auto;display:block;position:relative;transition:transform .2s ease}
+.marquee a:hover{transform:translateY(-5px) scale(1.03);z-index:2}
+.marquee img{width:168px;height:168px;object-fit:cover;border-radius:18px;
+  border:4px solid #fff;box-shadow:0 10px 26px rgba(94,42,134,.15);display:block}
+.marquee .half a:nth-child(odd) img{transform:rotate(-2.2deg)}
+.marquee .half a:nth-child(even) img{transform:rotate(2deg)}
+.marquee .half a:nth-child(3n) img{transform:rotate(-.8deg)}
+@media(max-width:560px){.marquee img{width:132px;height:132px;border-width:3px}.marquee .half{gap:14px;padding-right:14px}}
+@media(prefers-reduced-motion:reduce){
+  .marquee{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .marquee .track{animation:none}
+  .marquee .half[aria-hidden]{display:none}
 }
 
 /* ===== SECTIONS ===== */
@@ -136,18 +161,21 @@ section{scroll-margin-top:76px}
 .about-card.vis::before{background:var(--amarelo)}
 .about-card.val::before{background:var(--verde)}
 .about-ic{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;
-  font-size:23px;margin-bottom:12px}
-.about-card.mis .about-ic{background:#fbe4f1}
-.about-card.vis .about-ic{background:#fdeecb}
-.about-card.val .about-ic{background:#e3f4e4}
+  margin-bottom:12px}
+.about-ic svg{width:24px;height:24px}
+.about-card.mis .about-ic{background:#fbe4f1;color:var(--magenta)}
+.about-card.vis .about-ic{background:#fdeecb;color:#a3760a}
+.about-card.val .about-ic{background:#e3f4e4;color:#25752e}
 .about-card h3{font-family:'Baloo 2';font-weight:800;font-size:19px;color:var(--roxo);margin-bottom:8px}
 .about-card p{font-size:14.5px;color:#6f5f82;font-weight:600;line-height:1.6}
 .val-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
 .val-list span{font-family:'Baloo 2';font-weight:700;font-size:13px;color:#25752e;
   background:#eef8ef;border:1px solid #cdeacf;padding:6px 12px;border-radius:999px}
-.about-banner{margin-top:16px;background:linear-gradient(115deg,#5E2A86,#7c3aab 55%,#a02f8f);
+.about-banner{margin-top:16px;background:linear-gradient(115deg,#5E2A86,#7c3aab 30%,#a02f8f 55%,#7c3aab 80%,#5E2A86);
+  background-size:220% 100%;animation:bannerFlow 14s ease-in-out infinite alternate;
   border-radius:var(--r-lg);padding:22px 26px;display:flex;flex-wrap:wrap;gap:10px 26px;align-items:center;
   box-shadow:0 14px 34px rgba(94,42,134,.28)}
+@keyframes bannerFlow{from{background-position:0% 50%}to{background-position:100% 50%}}
 .about-banner strong{font-family:'Baloo 2';font-weight:800;font-size:17px;color:#fff;flex:1 1 260px}
 .about-banner .tags{display:flex;flex-wrap:wrap;gap:8px}
 .about-banner .tags span{font-family:'Baloo 2';font-weight:700;font-size:12.5px;color:#fff;
@@ -345,7 +373,6 @@ body.cart-lock{overflow:hidden}
 </nav>
 
 <header class="hero" id="top">
-  <div class="blobs"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span></div>
   <div class="hero-in">
     <div class="hero-copy">
       <img class="logo-img" src="logo-eba.png" width="289" height="460" alt="EBA &middot; Eco Bazar">
@@ -353,9 +380,9 @@ body.cart-lock{overflow:hidden}
       <h1>Moda e acess&oacute;rios sustent&aacute;veis, <em>do seu jeito</em></h1>
       <p class="lead">Curadoria de pe&ccedil;as e personaliza&ccedil;&atilde;o criativa, feitas por estudantes. Escolha os produtos, conte como quer a personaliza&ccedil;&atilde;o e combine tudo pelo WhatsApp.</p>
       <div class="hero-chips">
-        <span class="chip verde">&#9851;&#65039; Economia circular</span>
-        <span class="chip roxo">&#129309; Economia solid&aacute;ria</span>
-        <span class="chip amarelo">&#10024; Pe&ccedil;as personalizadas</span>
+        <span class="chip verde">Economia circular</span>
+        <span class="chip roxo">Economia solid&aacute;ria</span>
+        <span class="chip amarelo">Pe&ccedil;as personalizadas</span>
       </div>
       <div class="hero-cta">
         <a class="btn-main" href="#produtos">Fazer minha encomenda</a>
@@ -373,6 +400,39 @@ body.cart-lock{overflow:hidden}
   </div>
 </header>
 
+<div class="marquee" aria-label="Vitrine de produtos da EBA">
+  <div class="track">
+    <div class="half">
+      <a href="#produtos"><img src="img/produtos/caneca.jpg" alt="Caneca personalizada" width="168" height="168"></a>
+      <a href="#produtos"><img src="img/produtos/ecobag.jpg" alt="Ecobag" width="168" height="168"></a>
+      <a href="#produtos"><img src="img/produtos/chaveiro_perso.jpg" alt="Chaveiro personalizado" width="168" height="168"></a>
+      <a href="#produtos"><img src="img/produtos/phone_strap.jpg" alt="Phone strap de mi&ccedil;angas" width="168" height="168"></a>
+      <a href="#galeria"><img src="img/galeria/bazar-livros.jpg" alt="Livros do bazar" width="168" height="168"></a>
+      <a href="#produtos"><img src="img/produtos/pulseira.jpg" alt="Pulseira de mi&ccedil;anga" width="168" height="168"></a>
+      <a href="#produtos"><img src="img/produtos/botton.jpg" alt="Bottons" width="168" height="168"></a>
+      <a href="#produtos"><img src="img/produtos/mochilinha.jpg" alt="Mochilinha de academia" width="168" height="168"></a>
+      <a href="#galeria"><img src="img/galeria/strap-perolas.jpg" alt="Phone strap de p&eacute;rolas" width="168" height="168"></a>
+      <a href="#produtos"><img src="img/produtos/colar.jpg" alt="Colar de mi&ccedil;anga" width="168" height="168"></a>
+      <a href="#produtos"><img src="img/produtos/chaveiro_normal.jpg" alt="Chaveiros com frases" width="168" height="168"></a>
+      <a href="#galeria"><img src="img/galeria/micangas-rosa.jpg" alt="Mi&ccedil;angas rosa" width="168" height="168"></a>
+    </div>
+    <div class="half" aria-hidden="true">
+      <a href="#produtos" tabindex="-1"><img src="img/produtos/caneca.jpg" alt="" width="168" height="168"></a>
+      <a href="#produtos" tabindex="-1"><img src="img/produtos/ecobag.jpg" alt="" width="168" height="168"></a>
+      <a href="#produtos" tabindex="-1"><img src="img/produtos/chaveiro_perso.jpg" alt="" width="168" height="168"></a>
+      <a href="#produtos" tabindex="-1"><img src="img/produtos/phone_strap.jpg" alt="" width="168" height="168"></a>
+      <a href="#galeria" tabindex="-1"><img src="img/galeria/bazar-livros.jpg" alt="" width="168" height="168"></a>
+      <a href="#produtos" tabindex="-1"><img src="img/produtos/pulseira.jpg" alt="" width="168" height="168"></a>
+      <a href="#produtos" tabindex="-1"><img src="img/produtos/botton.jpg" alt="" width="168" height="168"></a>
+      <a href="#produtos" tabindex="-1"><img src="img/produtos/mochilinha.jpg" alt="" width="168" height="168"></a>
+      <a href="#galeria" tabindex="-1"><img src="img/galeria/strap-perolas.jpg" alt="" width="168" height="168"></a>
+      <a href="#produtos" tabindex="-1"><img src="img/produtos/colar.jpg" alt="" width="168" height="168"></a>
+      <a href="#produtos" tabindex="-1"><img src="img/produtos/chaveiro_normal.jpg" alt="" width="168" height="168"></a>
+      <a href="#galeria" tabindex="-1"><img src="img/galeria/micangas-rosa.jpg" alt="" width="168" height="168"></a>
+    </div>
+  </div>
+</div>
+
 <div class="wrap">
 
   <section id="quem-somos">
@@ -383,17 +443,17 @@ body.cart-lock{overflow:hidden}
     <p class="sec-sub">A EBA nasceu como projeto da turma ADM 4 Tarde do IFRS Campus Viam&atilde;o: um eco bazar que une <b>moda e acess&oacute;rios sustent&aacute;veis</b>, curadoria de pe&ccedil;as e personaliza&ccedil;&atilde;o criativa &mdash; aplicando na pr&aacute;tica a gest&atilde;o que aprendemos no curso para gerar valor social e ambiental na nossa comunidade.</p>
     <div class="about-grid">
       <div class="about-card mis">
-        <div class="about-ic">&#127919;</div>
+        <div class="about-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></div>
         <h3>Miss&atilde;o</h3>
         <p>Proporcionar o acesso &agrave; moda e acess&oacute;rios sustent&aacute;veis por meio da curadoria de pe&ccedil;as e personaliza&ccedil;&atilde;o criativa, aplicando as melhores pr&aacute;ticas de gest&atilde;o adquiridas no curso para gerar valor social e ambiental.</p>
       </div>
       <div class="about-card vis">
-        <div class="about-ic">&#128064;</div>
+        <div class="about-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.8"/></svg></div>
         <h3>Vis&atilde;o</h3>
         <p>Ser conhecida como uma iniciativa jovem que une sustentabilidade, estilo, impacto social e economia solid&aacute;ria &mdash; tornando-se exemplo de impacto positivo tanto para os estudantes do instituto quanto para a comunidade viamonense.</p>
       </div>
       <div class="about-card val">
-        <div class="about-ic">&#127793;</div>
+        <div class="about-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21V9"/><path d="M12 9C12 5 9 3 4.5 3.5 5 8 8 10 12 9Z"/><path d="M12 13c0-3.5 2.5-5.3 6.5-4.8-.4 4-3 5.8-6.5 4.8Z"/></svg></div>
         <h3>Valores</h3>
         <div class="val-list">
           <span>&Eacute;tica</span>
@@ -406,11 +466,11 @@ body.cart-lock{overflow:hidden}
       </div>
     </div>
     <div class="about-banner">
-      <strong>Cada pe&ccedil;a reaproveitada &eacute; menos res&iacute;duo no mundo e mais renda na comunidade. &#127807;</strong>
+      <strong>Cada pe&ccedil;a reaproveitada &eacute; menos res&iacute;duo no mundo e mais renda na comunidade.</strong>
       <div class="tags">
-        <span>&#9851;&#65039; Economia circular</span>
-        <span>&#129309; Economia solid&aacute;ria</span>
-        <span>&#128717;&#65039; Consumo consciente</span>
+        <span>Economia circular</span>
+        <span>Economia solid&aacute;ria</span>
+        <span>Consumo consciente</span>
       </div>
     </div>
   </section>
@@ -422,7 +482,7 @@ body.cart-lock{overflow:hidden}
     </div>
     <p class="sec-sub">Um pouquinho do que passa pelas nossas m&atilde;os: pe&ccedil;as garimpadas com carinho e acess&oacute;rios feitos &agrave; m&atilde;o. O cat&aacute;logo completo do bazar est&aacute; no nosso <a href="https://www.instagram.com/eba.online/" target="_blank" rel="noopener noreferrer" style="color:var(--magenta);font-weight:800">Instagram</a>.</p>
     <div class="gal">
-      <figure><img src="img/galeria/bazar-livros.jpg" alt="Livros garimpados do bazar EBA espalhados na grama" loading="lazy"><figcaption>Livros garimpados do bazar &#128218;</figcaption></figure>
+      <figure><img src="img/galeria/bazar-livros.jpg" alt="Livros garimpados do bazar EBA espalhados na grama" loading="lazy"><figcaption>Livros garimpados do bazar</figcaption></figure>
       <figure><img src="img/galeria/caneca-arte.jpg" alt="Caneca personalizada com arte" loading="lazy"><figcaption>Canecas com arte personalizada</figcaption></figure>
       <figure><img src="img/galeria/chaveiros-galho.jpg" alt="Chaveiros almofadinha personalizados" loading="lazy"><figcaption>Chaveiros almofadinha dos cursos</figcaption></figure>
       <figure><img src="img/galeria/strap-perolas.jpg" alt="Phone strap de p&eacute;rolas feito &agrave; m&atilde;o" loading="lazy"><figcaption>Phone straps feitos &agrave; m&atilde;o</figcaption></figure>
@@ -487,7 +547,7 @@ body.cart-lock{overflow:hidden}
     </div>
   </section>
 
-  <p class="foot">Feito com &#10084;&#65039; pela turma <b>ADM 4 Tarde</b> &middot; IFRS Campus Viam&atilde;o<br><a class="ig" href="https://www.instagram.com/eba.online/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.31-1.46.72-2.12 1.38C1.36 2.67.95 3.34.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.8.72 1.47 1.38 2.13.66.66 1.33 1.07 2.12 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.8-.31 1.47-.72 2.13-1.38.66-.66 1.07-1.33 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.31-.8-.72-1.47-1.38-2.13-.66-.66-1.33-1.07-2.13-1.38-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0Z"/><path d="M12 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84M12 16a4 4 0 1 1 4-4 4 4 0 0 1-4 4Z"/><circle cx="18.41" cy="5.59" r="1.44"/></svg>@eba.online</a></p>
+  <p class="foot">Feito com carinho pela turma <b>ADM 4 Tarde</b> &middot; IFRS Campus Viam&atilde;o<br><a class="ig" href="https://www.instagram.com/eba.online/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.31-1.46.72-2.12 1.38C1.36 2.67.95 3.34.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.8.72 1.47 1.38 2.13.66.66 1.33 1.07 2.12 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.8-.31 1.47-.72 2.13-1.38.66-.66 1.07-1.33 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.31-.8-.72-1.47-1.38-2.13-.66-.66-1.33-1.07-2.13-1.38-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0Z"/><path d="M12 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84M12 16a4 4 0 1 1 4-4 4 4 0 0 1-4 4Z"/><circle cx="18.41" cy="5.59" r="1.44"/></svg>@eba.online</a></p>
 </div>
 
 <div class="cart-overlay" id="cartOverlay" onclick="toggleCart(false)"></div>
