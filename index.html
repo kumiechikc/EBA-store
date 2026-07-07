@@ -26,7 +26,12 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Nunito',system-ui,sans-serif;background:var(--paper);color:var(--ink);
-  line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:120px}
+  line-height:1.55;-webkit-font-smoothing:antialiased;position:relative}
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:conic-gradient(from 0deg,
+    rgba(245,184,30,.16), rgba(238,59,69,.08), rgba(214,36,138,.12),
+    rgba(94,42,134,.11), rgba(59,165,70,.12), rgba(240,130,46,.09), rgba(245,184,30,.16));
+  filter:blur(70px) saturate(1.05)}
 img{max-width:100%;display:block}
 .wrap{max-width:1060px;margin:0 auto;padding:0 22px}
 
@@ -53,7 +58,7 @@ img{max-width:100%;display:block}
 .cart-badge.show{display:flex}
 
 /* ===== HERO (gradient animado + textura) ===== */
-.hero{position:relative;overflow:hidden;background:var(--paper);isolation:isolate}
+.hero{position:relative;overflow:hidden;isolation:isolate}
 .hero::before{content:"";position:absolute;left:50%;top:50%;width:170vmax;height:170vmax;
   margin:-85vmax 0 0 -85vmax;z-index:-1;pointer-events:none;
   background:conic-gradient(from 0deg,
@@ -272,9 +277,10 @@ section{scroll-margin-top:76px}
 @media(max-width:520px){.grid2{grid-template-columns:1fr}}
 
 /* ===== BARRA TOTAL ===== */
-.bar{position:fixed;left:0;right:0;bottom:0;z-index:60;
+.bar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:60;
   background:rgba(255,255,255,.94);backdrop-filter:blur(14px);
   border-top:1px solid var(--line);box-shadow:0 -10px 34px rgba(94,42,134,.12)}
+.bar.show{display:block}
 .bar .in{max-width:1060px;margin:0 auto;padding:12px 22px;display:flex;align-items:center;gap:16px}
 .bar .tot{flex:1;min-width:0}
 .bar .tot .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;font-weight:800}
@@ -675,7 +681,7 @@ body.cart-lock{overflow:hidden}
         </div>
         <div class="fld">
           <label for="fone">WhatsApp <span class="r">*</span></label>
-          <input type="tel" id="fone" placeholder="(51) 9 9999-9999" autocomplete="tel">
+          <input type="tel" id="fone" placeholder="(51) 9 9999-9999" autocomplete="tel" inputmode="numeric" maxlength="16">
           <div class="err" id="eFone">Coloque um WhatsApp v&aacute;lido.</div>
         </div>
       </div>
@@ -892,6 +898,8 @@ function upd(){
   document.getElementById('tQtd').textContent=` · ${n} ${n===1?'item':'itens'}`;
   document.getElementById('resumo').textContent=r.join('  ·  ');
   document.getElementById('btn').disabled=n===0;
+  document.querySelector('.bar').classList.toggle('show',n>0);
+  document.body.style.paddingBottom=n>0?'120px':'0';
   renderCart(t,n);
 }
 
@@ -996,6 +1004,16 @@ function valida(){
   if(!nome||fone.length<10)ok=false;
   return ok;
 }
+
+function maskFone(v){
+  v=v.replace(/\D/g,'').slice(0,11);
+  if(v.length>10)return v.replace(/(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');
+  if(v.length>6)return v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3');
+  if(v.length>2)return v.replace(/(\d{2})(\d{0,5})/,'($1) $2');
+  if(v.length>0)return v.replace(/(\d{0,2})/,'($1');
+  return v;
+}
+document.getElementById('fone').addEventListener('input',e=>{e.target.value=maskFone(e.target.value)});
 
 // Monta os itens para o WhatsApp: um por linha, com bullet e personalizacao
 function montaItensWa(){
