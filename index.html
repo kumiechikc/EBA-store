@@ -314,14 +314,6 @@ section{scroll-margin-top:76px}
 .foot a.turma{color:var(--magenta);font-weight:800;text-decoration:underline;text-underline-offset:3px}
 .foot a.turma:hover{color:var(--roxo)}
 
-/* ===== CARD DE FEEDBACK (pós-pedido) ===== */
-.fbcard{display:flex;align-items:flex-start;gap:12px;text-align:left;margin-top:16px;
-  background:var(--creme);border:1.5px solid #f0e2c4;border-radius:16px;padding:14px 16px}
-.fbcard .fbic{flex:0 0 auto;width:34px;height:34px;border-radius:11px;background:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 2px 6px rgba(94,42,134,.12)}
-.fbcard .fbtxt b{display:block;font-family:'Baloo 2';font-weight:800;font-size:13.5px;color:var(--roxo);margin-bottom:2px}
-.fbcard .fbtxt p{font-size:12.5px;color:#6f5f82;font-weight:600;line-height:1.5;margin:0}
-
 /* acabamento: confirmação + WhatsApp + foco + reduced-motion */
 .modal .ped{font-family:'Baloo 2';font-weight:800;color:var(--roxo);font-size:15px;
   background:#f4ebfb;border-radius:12px;padding:8px 14px;display:inline-block;margin-bottom:14px}
@@ -400,14 +392,14 @@ body.cart-lock{overflow:hidden}
 .rate-lbl{font-family:'Baloo 2';font-weight:800;font-size:14px;color:var(--roxo);margin-bottom:8px}
 .rate-stars{display:flex;justify-content:center;gap:4px}
 .rate-stars button{background:none;border:0;cursor:pointer;padding:2px 3px;line-height:1;
-  font-size:31px;color:#e6d8c4;transition:transform .15s,color .2s}
+  font-size:31px;color:#c3b6d6;transition:transform .15s,color .2s}
 .rate-stars button:hover{transform:scale(1.18)}
 .rate-stars button.on{color:var(--amarelo);text-shadow:0 2px 8px rgba(245,184,30,.45)}
 @keyframes starPop{0%{transform:scale(1)}45%{transform:scale(1.5) rotate(-10deg)}100%{transform:scale(1)}}
 .rate-stars button.pop{animation:starPop .42s cubic-bezier(.34,1.56,.64,1)}
 .rate-extra{display:none;margin-top:10px;text-align:left}
 .rate-extra.show{display:block}
-.rate-hint{font-size:12px;color:var(--muted);opacity:.7;font-weight:700;margin-bottom:6px;text-align:center}
+.rate-hint{font-size:12px;color:var(--roxo);font-weight:700;margin-bottom:6px;text-align:center}
 .rate-extra input{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:11px;
   font-family:'Nunito';font-size:13px;font-weight:600;background:#fffdf9;color:var(--ink)}
 .rate-extra input:focus{outline:2px solid var(--amarelo);border-color:var(--amarelo)}
@@ -742,13 +734,6 @@ body.cart-lock{overflow:hidden}
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.22 3.07.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.18-1.41-.07-.12-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 0 1 2.89 6.99c0 5.45-4.43 9.88-9.88 9.88M20.46 3.49A11.81 11.81 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.69 1.45h.01c6.55 0 11.89-5.34 11.89-11.9 0-3.18-1.24-6.17-3.49-8.42Z"/></svg>
       Abrir WhatsApp
     </a>
-    <div class="fbcard">
-      <span class="fbic">&#127793;</span>
-      <div class="fbtxt">
-        <b>Adoramos saber sua opini&atilde;o!</b>
-        <p>Depois que receber seu pedido, manda um oi pra gente pelo WhatsApp contando o que achou &mdash; isso nos ajuda muito.</p>
-      </div>
-    </div>
     <button class="outra" onclick="document.getElementById('modal').classList.remove('show');location.reload()">Fazer outro pedido</button>
   </div>
 </div>
