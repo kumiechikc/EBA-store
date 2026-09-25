@@ -936,6 +936,20 @@ function finalizarCarrinho(){
   document.getElementById('dados').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
+/* Chamada ao Apps Script com limite de tempo: se o Google demorar demais,
+   o site segue pelo WhatsApp em vez de deixar o cliente esperando. */
+async function postScript(payload,ms){
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),ms);
+  try{
+    const resp=await fetch(SCRIPT_URL,{method:'POST',signal:ctrl.signal,
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)});
+    return await resp.json();
+  }catch(e){return null}
+  finally{clearTimeout(timer)}
+}
+
 /* ===== AVALIAÇÃO (estrelinhas) =====
    Envia para o mesmo Apps Script da planilha um payload com tipo:"avaliacao",
    numero do pedido, estrelas (1-5) e comentario opcional. No Apps Script,
@@ -971,9 +985,11 @@ function setEstrelas(n){
 async function enviarAvaliacao(){
   if(!RATE_ESTRELAS)return;
   const btn=document.getElementById('rateSend');
-  btn.disabled=true;btn.textContent='Enviando...';
+  btn.disabled=true;
+  // Não espera a resposta do Google: agradece na hora e a nota segue em
+  // segundo plano (keepalive mantém o envio mesmo se a aba for fechada).
   try{
-    await fetch(SCRIPT_URL,{method:'POST',
+    fetch(SCRIPT_URL,{method:'POST',keepalive:true,
       headers:{'Content-Type':'text/plain;charset=utf-8'},
       body:JSON.stringify({
         tipo:'avaliacao',
@@ -981,8 +997,8 @@ async function enviarAvaliacao(){
         estrelas:RATE_ESTRELAS,
         comentario:document.getElementById('rateTxt').value.trim(),
         nome:document.getElementById('nome').value.trim()
-      })});
-  }catch(e){/* mesmo offline, agradece — a nota já foi tentada */}
+      })}).catch(()=>{});
+  }catch(e){}
   btn.style.display='none';
   document.getElementById('rateExtra').classList.remove('show');
   document.getElementById('rateDone').style.display='block';
@@ -1032,7 +1048,8 @@ function montaMsg(numero,nome,itens,total){
 
 document.getElementById('btn').addEventListener('click',async function(){
   if(!valida()){window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});return}
-  const b=this;b.disabled=true;b.textContent='Enviando...';
+  const b=this;b.disabled=true;b.textContent='Registrando pedido...';
+  const aviso=setTimeout(()=>{b.textContent='Só mais um pouquinho...'},4000);
 
   let t=0,linhas=[];const payload={};
   P.forEach(p=>{
@@ -1054,14 +1071,10 @@ document.getElementById('btn').addEventListener('click',async function(){
   payload.site=document.getElementById('site').value;
 
   // Envia e LE a resposta (sem no-cors). text/plain evita preflight de CORS.
-  let pedido=null;
-  try{
-    const resp=await fetch(SCRIPT_URL,{method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify(payload)});
-    const data=await resp.json();
-    if(data&&data.ok&&data.pedido)pedido=data.pedido;
-  }catch(e){pedido=null;}
+  // Até 15 s; passou disso, segue pelo WhatsApp com o pedido "a confirmar".
+  const data=await postScript(payload,15000);
+  clearTimeout(aviso);
+  const pedido=(data&&data.ok&&data.pedido)?data.pedido:null;
 
   // Monta a mensagem do WhatsApp (com numero real ou "a confirmar")
   const numero=pedido||'(a confirmar)';
