@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EBA · Eco Bazar — Moda e acessórios sustentáveis</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>EBA · Eco Bazar | Moda e acessórios sustentáveis</title>
 <meta name="description" content="EBA · Eco Bazar: moda e acessórios sustentáveis com curadoria de peças e personalização criativa. Economia solidária e circular, feita por estudantes do IFRS Campus Viamão.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600&family=Fraunces:ital,opsz,wght@1,9..144,500;1,9..144,640&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-   EBA · Eco Bazar — identidade visual
+   EBA · Eco Bazar: identidade visual
    Paleta oficial da marca (não alterar sem combinar com a equipe)
    ============================================================ */
 :root{
@@ -408,6 +410,8 @@ body.cart-lock{overflow:hidden}
   box-shadow:0 4px 12px rgba(94,42,134,.25);transition:transform .15s}
 .rate-send:hover{transform:translateY(-1px)}
 .rate-send:disabled{background:#dcd2e6;cursor:not-allowed;box-shadow:none}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.priv{font-size:12.5px;color:#8b7c97;margin:12px 0 0;line-height:1.45}
 .rate-done{display:none;font-family:'Baloo 2';font-weight:800;font-size:14px;color:#25752e;margin-top:8px}
 </style>
 </head>
@@ -415,7 +419,7 @@ body.cart-lock{overflow:hidden}
 
 <nav class="topnav">
   <div class="topnav-in">
-    <a class="topnav-logo" href="#top" aria-label="EBA — início"><img class="topnav-logo-img" src="logo-eba.png" alt="EBA · Eco Bazar"></a>
+    <a class="topnav-logo" href="#top" aria-label="EBA, voltar ao início"><img class="topnav-logo-img" src="logo-eba.png" alt="EBA · Eco Bazar"></a>
     <div class="topnav-links">
       <a href="#quem-somos">Quem somos</a>
       <a href="#doacoes">Doa&ccedil;&otilde;es</a>
@@ -498,7 +502,7 @@ body.cart-lock{overflow:hidden}
       <div class="kicker">Quem somos</div>
       <h2>Um bazar jovem, sustent&aacute;vel e cheio de prop&oacute;sito</h2>
     </div>
-    <p class="sec-sub">A EBA nasceu como projeto da turma ADM 4 Tarde do IFRS Campus Viam&atilde;o: um eco bazar que une <b>moda e acess&oacute;rios sustent&aacute;veis</b>, curadoria de pe&ccedil;as e personaliza&ccedil;&atilde;o criativa &mdash; aplicando na pr&aacute;tica a gest&atilde;o que aprendemos no curso para gerar valor social e ambiental na nossa comunidade.</p>
+    <p class="sec-sub">A EBA nasceu como projeto da turma ADM 4 Tarde do IFRS Campus Viam&atilde;o: um eco bazar que une <b>moda e acess&oacute;rios sustent&aacute;veis</b>, curadoria de pe&ccedil;as e personaliza&ccedil;&atilde;o criativa. Aplicamos na pr&aacute;tica a gest&atilde;o que aprendemos no curso para gerar valor social e ambiental na nossa comunidade.</p>
     <div class="about-grid">
       <div class="about-card mis">
         <div class="about-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></div>
@@ -508,7 +512,7 @@ body.cart-lock{overflow:hidden}
       <div class="about-card vis">
         <div class="about-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.8"/></svg></div>
         <h3>Vis&atilde;o</h3>
-        <p>Ser conhecida como uma iniciativa jovem que une sustentabilidade, estilo, impacto social e economia solid&aacute;ria &mdash; tornando-se exemplo de impacto positivo tanto para os estudantes do instituto quanto para a comunidade viamonense.</p>
+        <p>Ser conhecida como uma iniciativa jovem que une sustentabilidade, estilo, impacto social e economia solid&aacute;ria e se tornar exemplo de impacto positivo tanto para os estudantes do instituto quanto para a comunidade viamonense.</p>
       </div>
       <div class="about-card val">
         <div class="about-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21V9"/><path d="M12 9C12 5 9 3 4.5 3.5 5 8 8 10 12 9Z"/><path d="M12 13c0-3.5 2.5-5.3 6.5-4.8-.4 4-3 5.8-6.5 4.8Z"/></svg></div>
@@ -532,7 +536,7 @@ body.cart-lock{overflow:hidden}
       </div>
     </div>
     <div class="about-banner formatura">
-      <strong>&#127891; Todo o lucro arrecadado &eacute; revertido para a formatura da turma ADM 4&ordm; ano &mdash; Tarde, do IFRS Campus Viam&atilde;o.</strong>
+      <strong>&#127891; Todo o lucro arrecadado &eacute; revertido para a formatura da turma ADM 4&ordm; ano Tarde, do IFRS Campus Viam&atilde;o.</strong>
       <div class="tags">
         <span>100% do lucro reinvestido</span>
         <span>Formatura ADM 4 Tarde</span>
@@ -560,7 +564,7 @@ body.cart-lock{overflow:hidden}
       <div class="about-card val">
         <div class="about-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></div>
         <h3>Por que doar</h3>
-        <p>Cada troca fortalece a <b>economia solid&aacute;ria e circular</b> da nossa comunidade &mdash; menos desperd&iacute;cio, mais gente vestida com consci&ecirc;ncia.</p>
+        <p>Cada troca fortalece a <b>economia solid&aacute;ria e circular</b> da nossa comunidade: menos desperd&iacute;cio e mais gente vestida com consci&ecirc;ncia.</p>
       </div>
     </div>
     <div class="about-banner">
@@ -579,15 +583,15 @@ body.cart-lock{overflow:hidden}
       <div class="kicker">Como e quando comprar</div>
       <h2>Hor&aacute;rios, local e Multi-Feira</h2>
     </div>
-    <p class="sec-sub">Al&eacute;m dos hor&aacute;rios fixos da lojinha, tamb&eacute;m trabalhamos <b>por encomenda</b> &mdash; &eacute; s&oacute; chamar no WhatsApp ou Instagram! &#128172;</p>
+    <p class="sec-sub">Os hor&aacute;rios s&atilde;o os mesmos na lojinha e na Multi-Feira. Fora deles, tamb&eacute;m trabalhamos <b>por encomenda</b>: &eacute; s&oacute; chamar no WhatsApp ou Instagram! &#128172;</p>
     <div class="about-grid">
       <div class="about-card hor">
         <div class="about-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
         <h3>Hor&aacute;rios de atendimento</h3>
         <ul class="sched-list">
-          <li><b>Ter&ccedil;a a sexta-feira</b> das 15h40 &agrave;s 16h00</li>
-          <li><b>Quarta-feira pela manh&atilde;</b> das 10h00 &agrave;s 11h30</li>
-          <li><b>Ter&ccedil;a-feira &agrave; noite</b> das 19h00 &agrave;s 20h40</li>
+          <li><b>Manh&atilde;</b> das 10h00 &agrave;s 11h30</li>
+          <li><b>Tarde</b> das 15h40 &agrave;s 16h00</li>
+          <li><b>Noite</b> das 18h30 &agrave;s 20h00</li>
         </ul>
       </div>
       <div class="about-card loc">
@@ -598,7 +602,7 @@ body.cart-lock{overflow:hidden}
       <div class="about-card feira">
         <div class="about-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 3 20h18L12 4Z"/><path d="m12 12-4 8"/><path d="m12 12 4 8"/></svg></div>
         <h3>Multi-Feira</h3>
-        <p>Estamos em <b>todas as Multi-Feiras</b>! Toda <b>quarta-feira, a partir das 18h</b>, nossa banca est&aacute; l&aacute; te esperando. &#127914;</p>
+        <p>Nos dias de <b>Multi-Feira</b>, nossa banca funciona <b>nesses mesmos hor&aacute;rios</b>. As datas a gente avisa no <a href="https://www.instagram.com/eba.online/" target="_blank" rel="noopener noreferrer" style="color:inherit;font-weight:800">Instagram</a>. &#127914;</p>
       </div>
     </div>
     <div class="about-banner">
@@ -633,7 +637,7 @@ body.cart-lock{overflow:hidden}
   </section>
 
   <!-- Depoimentos: seção desativada até termos depoimentos reais de clientes.
-       Transparência é um dos nossos valores — nada de avaliação inventada. ;)
+       Transparência é um dos nossos valores, nada de avaliação inventada. ;)
        Quando tiver depoimentos reais, é só recriar os cards aqui. -->
 
   <section id="produtos">
@@ -641,7 +645,7 @@ body.cart-lock{overflow:hidden}
       <div class="kicker">Passo 1</div>
       <h2>Escolha seus produtos</h2>
     </div>
-    <p class="sec-sub">Toque em <b>&ndash;</b> e <b>+</b> para a quantidade. Itens personaliz&aacute;veis abrem um campo para os detalhes.</p>
+    <p class="sec-sub">Toque em <b>&minus;</b> e <b>+</b> para a quantidade. Itens personaliz&aacute;veis abrem um campo para os detalhes.</p>
     <div class="grid" id="grid"></div>
   </section>
 
@@ -650,7 +654,7 @@ body.cart-lock{overflow:hidden}
       <div class="kicker">Passo 2</div>
       <h2>Quer algo especial?</h2>
     </div>
-    <p class="sec-sub">Cor, arte, nome, frase &mdash; conte aqui qualquer detalhe geral do pedido.</p>
+    <p class="sec-sub">Cor, arte, nome, frase: conte aqui qualquer detalhe geral do pedido.</p>
     <div class="panel">
       <div class="fld" style="margin:0">
         <textarea id="obs" placeholder="Ex.: Caneca com a arte do curso, cor preta. Botton do AC/DC. Chaveiro com o nome Ana."></textarea>
@@ -669,7 +673,7 @@ body.cart-lock{overflow:hidden}
         <div class="fld">
           <label for="nome">Nome completo <span class="r">*</span></label>
           <input type="text" id="nome" placeholder="Seu nome" autocomplete="name">
-          <div class="err" id="eNome">Preencha seu nome.</div>
+          <div class="err" id="eNome">Preencha seu nome completo.</div>
         </div>
         <div class="fld">
           <label for="fone">WhatsApp <span class="r">*</span></label>
@@ -677,6 +681,8 @@ body.cart-lock{overflow:hidden}
           <div class="err" id="eFone">Coloque um WhatsApp v&aacute;lido.</div>
         </div>
       </div>
+      <div class="hp" aria-hidden="true"><label for="hp_eba">Deixe em branco</label><input type="text" id="hp_eba" name="hp_eba" tabindex="-1" autocomplete="off"></div>
+      <p class="priv">Seu nome e WhatsApp s&atilde;o usados s&oacute; para combinar este pedido. Ficam com a equipe EBA, n&atilde;o s&atilde;o repassados a ningu&eacute;m e s&atilde;o apagados quando o projeto terminar.</p>
     </div>
   </section>
 
@@ -728,7 +734,7 @@ body.cart-lock{overflow:hidden}
         <input type="text" id="rateTxt" maxlength="140" placeholder="">
       </div>
       <button class="rate-send" type="button" id="rateSend" onclick="enviarAvaliacao()">Enviar avalia&ccedil;&atilde;o</button>
-      <div class="rate-done" id="rateDone">Avalia&ccedil;&atilde;o enviada &mdash; valeu demais! &#128156;</div>
+      <div class="rate-done" id="rateDone">Avalia&ccedil;&atilde;o enviada. Valeu demais! &#128156;</div>
     </div>
     <a id="mWa" class="wabtn" href="#" target="_blank" rel="noopener noreferrer" style="margin-top:14px">
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.22 3.07.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.18-1.41-.07-.12-.27-.2-.57-.35M12.05 21.79h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 0 1 2.89 6.99c0 5.45-4.43 9.88-9.88 9.88M20.46 3.49A11.81 11.81 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.9c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.69 1.45h.01c6.55 0 11.89-5.34 11.89-11.9 0-3.18-1.24-6.17-3.49-8.42Z"/></svg>
@@ -801,7 +807,7 @@ async function copiarPix(){
   setTimeout(()=>{btn.textContent='Copiar código Pix'},2500);
 }
 
-/* ícones SVG estilizados (identidade EBA) — fallback quando não há foto real */
+/* ícones SVG estilizados (identidade EBA), fallback quando não há foto real */
 const ic = {
   caneca:`<svg viewBox="0 0 64 64" fill="none"><rect x="14" y="20" width="30" height="30" rx="7" fill="#fff" stroke="#5E2A86" stroke-width="3"/><path d="M44 27h6a7 7 0 0 1 0 14h-6" stroke="#5E2A86" stroke-width="3"/><path d="M22 14c0 3-3 3-3 6M30 14c0 3-3 3-3 6" stroke="#EE3B45" stroke-width="3" stroke-linecap="round"/></svg>`,
   xicara:`<svg viewBox="0 0 64 64" fill="none"><path d="M16 26h26v10a13 13 0 0 1-26 0z" fill="#fff" stroke="#5E2A86" stroke-width="3"/><path d="M42 28h5a6 6 0 0 1 0 12h-5" stroke="#5E2A86" stroke-width="3"/><path d="M29 16l-3 5h7l-3 5" stroke="#D6248A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><ellipse cx="29" cy="52" rx="16" ry="3" fill="#F5B81E" opacity=".4"/></svg>`,
@@ -832,6 +838,7 @@ const P = [
   {id:"pulseira",         nm:"Pulseira de Miçanga", desc:"personalizável", pr:12, icon:ic.pulseira, perso:"Cores / nome"}
 ];
 
+const QTD_MAX=50; // mesmo limite do Apps Script
 const qtd={},perso={};
 P.forEach(p=>{qtd[p.id]=0;perso[p.id]=""});
 
@@ -857,7 +864,7 @@ P.forEach(p=>{
       ${p.desc?`<div class="desc">${p.desc}</div>`:''}
       <div class="pr">R$ ${p.pr}<small> /un</small></div>
       <div class="step">
-        <button aria-label="menos" onclick="mv('${p.id}',-1)">&ndash;</button>
+        <button aria-label="menos" onclick="mv('${p.id}',-1)">&minus;</button>
         <input id="q-${p.id}" type="number" min="0" value="0" inputmode="numeric" aria-label="quantidade ${p.nm}" onchange="sQ('${p.id}',this.value)">
         <button aria-label="mais" onclick="mv('${p.id}',1)">+</button>
       </div>
@@ -869,7 +876,7 @@ P.forEach(p=>{
 function mv(id,d){sQ(id,(qtd[id]||0)+d);if(d>0)bump(id)}
 function bump(id){const b=document.getElementById('b-'+id);if(!b)return;b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}
 function sQ(id,v){
-  v=Math.max(0,parseInt(v)||0);qtd[id]=v;
+  v=Math.min(QTD_MAX,Math.max(0,parseInt(v)||0));qtd[id]=v;
   document.getElementById('q-'+id).value=v;
   document.getElementById('b-'+id).textContent=v;
   document.getElementById('c-'+id).classList.toggle('on',v>0);
@@ -902,15 +909,17 @@ function renderCart(t,n){
     row.innerHTML=`
       <div class="ci-info">
         <div class="ci-nm">${p.nm}</div>
-        ${perso[p.id]?`<div class="ci-perso">${perso[p.id]}</div>`:''}
+        ${perso[p.id]?'<div class="ci-perso"></div>':''}
         <div class="ci-pr">R$ ${p.pr} /un</div>
       </div>
       <div class="ci-step">
-        <button type="button" aria-label="menos" onclick="mv('${p.id}',-1)">&ndash;</button>
+        <button type="button" aria-label="menos" onclick="mv('${p.id}',-1)">&minus;</button>
         <span>${qtd[p.id]}</span>
         <button type="button" aria-label="mais" onclick="mv('${p.id}',1)">+</button>
       </div>
       <div class="ci-sub">R$ ${sub}</div>`;
+    const ps=row.querySelector('.ci-perso');
+    if(ps)ps.textContent=perso[p.id];
     wrap.appendChild(row);
   });
   document.getElementById('cartTotalVal').textContent='R$ '+t;
@@ -926,6 +935,20 @@ function toggleCart(open){
 function finalizarCarrinho(){
   toggleCart(false);
   document.getElementById('dados').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* Chamada ao Apps Script com limite de tempo: se o Google demorar demais,
+   o site segue pelo WhatsApp em vez de deixar o cliente esperando. */
+async function postScript(payload,ms){
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),ms);
+  try{
+    const resp=await fetch(SCRIPT_URL,{method:'POST',signal:ctrl.signal,
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)});
+    return await resp.json();
+  }catch(e){return null}
+  finally{clearTimeout(timer)}
 }
 
 /* ===== AVALIAÇÃO (estrelinhas) =====
@@ -951,7 +974,7 @@ function setEstrelas(n){
   const hint=document.getElementById('rateHint');
   const txt=document.getElementById('rateTxt');
   if(n<=3){
-    hint.textContent='Manda a real \u{1F440} — teu feedback sincero ajuda MUITO a gente a melhorar!';
+    hint.textContent='Manda a real \u{1F440}, teu feedback sincero ajuda MUITO a gente a melhorar!';
     txt.placeholder='O que a gente pode melhorar? (opcional)';
   }else{
     hint.textContent='Eba! \u{1F389} Conta pra gente o que você mais curtiu.';
@@ -963,9 +986,11 @@ function setEstrelas(n){
 async function enviarAvaliacao(){
   if(!RATE_ESTRELAS)return;
   const btn=document.getElementById('rateSend');
-  btn.disabled=true;btn.textContent='Enviando...';
+  btn.disabled=true;
+  // Não espera a resposta do Google: agradece na hora e a nota segue em
+  // segundo plano (keepalive mantém o envio mesmo se a aba for fechada).
   try{
-    await fetch(SCRIPT_URL,{method:'POST',
+    fetch(SCRIPT_URL,{method:'POST',keepalive:true,
       headers:{'Content-Type':'text/plain;charset=utf-8'},
       body:JSON.stringify({
         tipo:'avaliacao',
@@ -973,8 +998,8 @@ async function enviarAvaliacao(){
         estrelas:RATE_ESTRELAS,
         comentario:document.getElementById('rateTxt').value.trim(),
         nome:document.getElementById('nome').value.trim()
-      })});
-  }catch(e){/* mesmo offline, agradece — a nota já foi tentada */}
+      })}).catch(()=>{});
+  }catch(e){}
   btn.style.display='none';
   document.getElementById('rateExtra').classList.remove('show');
   document.getElementById('rateDone').style.display='block';
@@ -984,9 +1009,9 @@ function valida(){
   let ok=true;
   const nome=document.getElementById('nome').value.trim();
   const fone=document.getElementById('fone').value.replace(/\D/g,'');
-  document.getElementById('eNome').style.display=nome?'none':'block';
+  document.getElementById('eNome').style.display=nome.length>=2?'none':'block';
   document.getElementById('eFone').style.display=fone.length>=10?'none':'block';
-  if(!nome||fone.length<10)ok=false;
+  if(nome.length<2||fone.length<10)ok=false;
   return ok;
 }
 
@@ -1006,7 +1031,7 @@ function montaItensWa(){
   P.forEach(p=>{
     if(qtd[p.id]>0){
       let s=`• ${qtd[p.id]}x ${p.nm} (R$${qtd[p.id]*p.pr})`;
-      if(perso[p.id]&&perso[p.id].trim())s+=` — ${perso[p.id].trim()}`;
+      if(perso[p.id]&&perso[p.id].trim())s+=`: ${perso[p.id].trim()}`;
       linhas.push(s);
     }
   });
@@ -1024,11 +1049,13 @@ function montaMsg(numero,nome,itens,total){
 
 document.getElementById('btn').addEventListener('click',async function(){
   if(!valida()){window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});return}
-  const b=this;b.disabled=true;b.textContent='Enviando...';
+  const b=this;b.disabled=true;b.textContent='Registrando pedido...';
+  const aviso=setTimeout(()=>{b.textContent='Só mais um pouquinho...'},4000);
 
   let t=0,linhas=[];const payload={};
   P.forEach(p=>{
     payload['q_'+p.id]=qtd[p.id];
+    if(qtd[p.id]>0&&perso[p.id])payload['p_'+p.id]=perso[p.id].trim();
     if(qtd[p.id]>0){
       t+=qtd[p.id]*p.pr;
       let s=`${qtd[p.id]}x ${p.nm} (R$${qtd[p.id]*p.pr})`;
@@ -1041,18 +1068,18 @@ document.getElementById('btn').addEventListener('click',async function(){
   payload.whatsapp=document.getElementById('fone').value.trim();
   payload.perfil='Cliente externo';
   payload.personalizacao=document.getElementById('obs').value.trim();
+  // itens/total: só o Apps Script antigo usa; o novo recalcula tudo.
   payload.itens=linhas.join(' | ');
   payload.total=t;
+  payload.hp_eba=document.getElementById('hp_eba').value;
 
   // Envia e LE a resposta (sem no-cors). text/plain evita preflight de CORS.
-  let pedido=null;
-  try{
-    const resp=await fetch(SCRIPT_URL,{method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify(payload)});
-    const data=await resp.json();
-    if(data&&data.ok&&data.pedido)pedido=data.pedido;
-  }catch(e){pedido=null;}
+  // Até 20 s; passou disso, segue pelo WhatsApp com o pedido "a confirmar".
+  const data=await postScript(payload,20000);
+  clearTimeout(aviso);
+  const pedido=(data&&data.ok&&data.pedido)?data.pedido:null;
+  // Vale o total calculado pelo servidor (preços oficiais), se ele devolver.
+  if(pedido&&Number(data.total)>0)t=Number(data.total);
 
   // Monta a mensagem do WhatsApp (com numero real ou "a confirmar")
   const numero=pedido||'(a confirmar)';
