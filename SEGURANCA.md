@@ -25,32 +25,30 @@ O resto depende de configuração nas contas, e **só quem tem acesso a elas pod
 - [ ] **Verificação em 2 etapas** na conta Google dona da planilha e do script.
 - [ ] Verificação em 2 etapas no **GitHub**.
 - [ ] Verificação em 2 etapas no **Registro.br**.
+- [ ] Verificação em 2 etapas na **Vercel**.
 
-## 4. Domínio `ebastoreif.com.br` (Registro.br + GitHub Pages)
-1. **Registro.br → Domínios → ebastoreif.com.br → DNS → Configurar zona DNS** (usar "DNS do Registro.br"). Adicionar:
+## 4. Domínio `ebastoreif.com.br` (Registro.br + Vercel)
+O site é publicado pela **Vercel** (projeto `eba-store`), que faz deploy sozinha a cada merge na `main`. Os domínios `ebastoreif.com.br` e `www.ebastoreif.com.br` (este redireciona para o principal) **já foram adicionados ao projeto na Vercel**. Falta só o DNS:
 
-   | Tipo  | Nome  | Valor |
-   |-------|-------|-------|
-   | A     | (vazio) | 185.199.108.153 |
-   | A     | (vazio) | 185.199.109.153 |
-   | A     | (vazio) | 185.199.110.153 |
-   | A     | (vazio) | 185.199.111.153 |
-   | AAAA  | (vazio) | 2606:50c0:8000::153 |
-   | AAAA  | (vazio) | 2606:50c0:8001::153 |
-   | AAAA  | (vazio) | 2606:50c0:8002::153 |
-   | AAAA  | (vazio) | 2606:50c0:8003::153 |
-   | CNAME | www   | kumiechikc.github.io |
+1. **Vercel → projeto eba-store → Settings → Domains.** Confira os valores que a Vercel mostra para cada domínio. Se forem diferentes da tabela abaixo, **use os da Vercel**.
+2. **Registro.br → Domínios → ebastoreif.com.br → DNS → Configurar zona DNS** (usar "DNS do Registro.br"). Adicionar:
 
-2. Esperar a propagação. Costuma levar de minutos a algumas horas no Registro.br.
-3. **GitHub → repositório → Settings → Pages → Custom domain:** `ebastoreif.com.br` → Save. Esperar o "DNS check successful".
-4. Marcar **Enforce HTTPS**. O certificado pode levar até 24 h para ser emitido.
-5. **GitHub → sua conta → Settings → Pages → Add a domain:** verificar `ebastoreif.com.br` com o registro TXT que o GitHub mostrar (criar no Registro.br). Isso impede que outra pessoa use o seu domínio no GitHub Pages se um dia o site for desligado.
-6. Depois de tudo pronto, testar:
+   | Tipo  | Nome    | Valor |
+   |-------|---------|-------|
+   | A     | (vazio) | 76.76.21.21 |
+   | CNAME | www     | cname.vercel-dns.com |
+
+   Se houver outros registros `A`/`AAAA` no domínio vazio (por exemplo, os do GitHub Pages `185.199.x.x`), apague.
+3. Esperar a propagação (minutos a algumas horas). Em Settings → Domains, os dois domínios ficam com "Valid Configuration" e o HTTPS é emitido automaticamente.
+4. Testar:
    - `https://ebastoreif.com.br`
-   - `https://www.ebastoreif.com.br`
-   - um pedido de verdade pelo site.
+   - `https://www.ebastoreif.com.br` (deve redirecionar)
+   - um pedido de verdade.
+5. **GitHub → repositório → Settings → Pages:** se estiver ativado, **desativar**. Senão existem duas cópias do site no ar e uma delas fica sem manutenção.
 
-> Até o DNS funcionar, o endereço `kumiechikc.github.io/EBA-store` pode redirecionar para um domínio que ainda não abre. Se o site "sumir", é isso. Configure o DNS ou tire temporariamente o domínio em Settings → Pages.
+Os cabeçalhos de segurança (bloqueio de iframe, HSTS, nosniff) ficam no `vercel.json`.
+
+> Atenção: o plano gratuito (Hobby) da Vercel é para uso **não comercial**. Para projeto escolar costuma passar, mas uma loja vendendo produtos é zona cinzenta. Se a Vercel reclamar, a alternativa é o GitHub Pages, que também tem restrição para e-commerce.
 
 ## 5. Dados dos clientes (LGPD)
 - O site coleta só nome e WhatsApp e avisa o cliente disso embaixo do formulário.
