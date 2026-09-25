@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>EBA · Eco Bazar — Moda e acessórios sustentáveis</title>
 <meta name="description" content="EBA · Eco Bazar: moda e acessórios sustentáveis com curadoria de peças e personalização criativa. Economia solidária e circular, feita por estudantes do IFRS Campus Viamão.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
@@ -408,6 +410,8 @@ body.cart-lock{overflow:hidden}
   box-shadow:0 4px 12px rgba(94,42,134,.25);transition:transform .15s}
 .rate-send:hover{transform:translateY(-1px)}
 .rate-send:disabled{background:#dcd2e6;cursor:not-allowed;box-shadow:none}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.priv{font-size:12.5px;color:#8b7c97;margin:12px 0 0;line-height:1.45}
 .rate-done{display:none;font-family:'Baloo 2';font-weight:800;font-size:14px;color:#25752e;margin-top:8px}
 </style>
 </head>
@@ -579,15 +583,15 @@ body.cart-lock{overflow:hidden}
       <div class="kicker">Como e quando comprar</div>
       <h2>Hor&aacute;rios, local e Multi-Feira</h2>
     </div>
-    <p class="sec-sub">Al&eacute;m dos hor&aacute;rios fixos da lojinha, tamb&eacute;m trabalhamos <b>por encomenda</b> &mdash; &eacute; s&oacute; chamar no WhatsApp ou Instagram! &#128172;</p>
+    <p class="sec-sub">Os hor&aacute;rios s&atilde;o os mesmos na lojinha e na Multi-Feira. Fora deles, tamb&eacute;m trabalhamos <b>por encomenda</b>: &eacute; s&oacute; chamar no WhatsApp ou Instagram! &#128172;</p>
     <div class="about-grid">
       <div class="about-card hor">
         <div class="about-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
         <h3>Hor&aacute;rios de atendimento</h3>
         <ul class="sched-list">
-          <li><b>Ter&ccedil;a a sexta-feira</b> das 15h40 &agrave;s 16h00</li>
-          <li><b>Quarta-feira pela manh&atilde;</b> das 10h00 &agrave;s 11h30</li>
-          <li><b>Ter&ccedil;a-feira &agrave; noite</b> das 19h00 &agrave;s 20h40</li>
+          <li><b>Manh&atilde;</b> das 10h00 &agrave;s 11h30</li>
+          <li><b>Tarde</b> das 15h40 &agrave;s 16h00</li>
+          <li><b>Noite</b> das 18h30 &agrave;s 20h00</li>
         </ul>
       </div>
       <div class="about-card loc">
@@ -598,7 +602,7 @@ body.cart-lock{overflow:hidden}
       <div class="about-card feira">
         <div class="about-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 3 20h18L12 4Z"/><path d="m12 12-4 8"/><path d="m12 12 4 8"/></svg></div>
         <h3>Multi-Feira</h3>
-        <p>Estamos em <b>todas as Multi-Feiras</b>! Toda <b>quarta-feira, a partir das 18h</b>, nossa banca est&aacute; l&aacute; te esperando. &#127914;</p>
+        <p>Nos dias de <b>Multi-Feira</b>, nossa banca funciona <b>nesses mesmos hor&aacute;rios</b>. As datas a gente avisa no <a href="https://www.instagram.com/eba.online/" target="_blank" rel="noopener noreferrer" style="color:inherit;font-weight:800">Instagram</a>. &#127914;</p>
       </div>
     </div>
     <div class="about-banner">
@@ -677,6 +681,8 @@ body.cart-lock{overflow:hidden}
           <div class="err" id="eFone">Coloque um WhatsApp v&aacute;lido.</div>
         </div>
       </div>
+      <div class="hp" aria-hidden="true"><label for="site">Deixe em branco</label><input type="text" id="site" name="site" tabindex="-1" autocomplete="off"></div>
+      <p class="priv">Seu nome e WhatsApp s&atilde;o usados s&oacute; para combinar este pedido. Ficam com a equipe EBA, n&atilde;o s&atilde;o repassados a ningu&eacute;m e s&atilde;o apagados quando o projeto terminar.</p>
     </div>
   </section>
 
@@ -902,7 +908,7 @@ function renderCart(t,n){
     row.innerHTML=`
       <div class="ci-info">
         <div class="ci-nm">${p.nm}</div>
-        ${perso[p.id]?`<div class="ci-perso">${perso[p.id]}</div>`:''}
+        ${perso[p.id]?'<div class="ci-perso"></div>':''}
         <div class="ci-pr">R$ ${p.pr} /un</div>
       </div>
       <div class="ci-step">
@@ -911,6 +917,8 @@ function renderCart(t,n){
         <button type="button" aria-label="mais" onclick="mv('${p.id}',1)">+</button>
       </div>
       <div class="ci-sub">R$ ${sub}</div>`;
+    const ps=row.querySelector('.ci-perso');
+    if(ps)ps.textContent=perso[p.id];
     wrap.appendChild(row);
   });
   document.getElementById('cartTotalVal').textContent='R$ '+t;
@@ -1043,6 +1051,7 @@ document.getElementById('btn').addEventListener('click',async function(){
   payload.personalizacao=document.getElementById('obs').value.trim();
   payload.itens=linhas.join(' | ');
   payload.total=t;
+  payload.site=document.getElementById('site').value;
 
   // Envia e LE a resposta (sem no-cors). text/plain evita preflight de CORS.
   let pedido=null;
