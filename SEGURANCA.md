@@ -12,8 +12,9 @@ O resto depende de configuração nas contas, e **só quem tem acesso a elas pod
 ## 2. Apps Script
 - [ ] Colar o `apps-script/Code.gs` novo no editor e salvar.
 - [ ] **Configurações do projeto (engrenagem) → Propriedades do script → Adicionar:**
-  - `EMAIL_AVISO` = **um** e-mail (ex.: `tec.adm4ifrs@gmail.com`).
-  - Motivo: conta Gmail comum tem cota de **100 destinatários por dia**. Cada pedido mandado para 5 pessoas gasta 5, então com 20 pedidos os avisos param. Com 1 destinatário, a cota dá para ~100 pedidos por dia.
+  - `EMAIL_AVISO` = os e-mails que devem receber os pedidos, separados por vírgula (ex.: a mesma lista de 5 e-mails que ficava no código).
+  - Atenção à cota: conta Gmail comum manda para no máximo **100 destinatários por dia**. Com 5 e-mails, cada pedido gasta 5, então por volta de **20 pedidos por dia** os avisos param de sair. O pedido continua gravado na planilha.
+  - Para tirar esse teto: criar um **Google Grupo** gratuito com os 5 como membros e colocar só o endereço do grupo no `EMAIL_AVISO`. Aí cada pedido conta como 1 destinatário.
 - [ ] **Implantar → Gerenciar implantações:**
   - Na implantação atual: lápis → Versão **"Nova versão"** → Implantar. A URL continua a mesma, então não precisa mexer no `index.html`.
   - **Arquivar todas as outras implantações.** URLs antigas continuam aceitando pedidos com o código antigo, sem as proteções.

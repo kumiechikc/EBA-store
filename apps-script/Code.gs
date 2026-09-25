@@ -39,9 +39,11 @@ const PRODUTOS = [
   ["q_pulseira",         "Pulseira Miçanga",      12]
 ];
 
-const QTD_MAX = 50;              // por produto, por pedido
-const LIMITE_PEDIDOS_10MIN = 15; // acima disso o site recebe erro e manda pelo WhatsApp
-const LIMITE_EMAILS_HORA = 12;   // acima disso grava, mas não manda e-mail (poupa a cota)
+const QTD_MAX = 50;                  // por produto, por pedido (o site usa o mesmo limite)
+const LIMITE_PEDIDOS_10MIN = 30;     // acima disso o site recebe erro e manda pelo WhatsApp
+const LIMITE_AVALIACOES_10MIN = 30;
+const LIMITE_EMAILS_PEDIDO_HORA = 20; // acima disso grava, mas não manda e-mail (poupa a cota)
+const LIMITE_ALERTAS_HORA = 3;        // alertas de avaliação baixa têm cota separada
 
 /* ================================================================
    Helpers de segurança
@@ -70,11 +72,14 @@ function emailsAviso() {
   return PropertiesService.getScriptProperties().getProperty("EMAIL_AVISO") || "";
 }
 
-// Contador simples por janela de tempo (global: o Apps Script não expõe o IP).
+// Contador por janela fixa de tempo (global: o Apps Script não expõe o IP).
+// A chave muda a cada janela, então o contador zera sozinho mesmo com
+// tráfego contínuo.
 function contar(chave, janelaSeg) {
   const cache = CacheService.getScriptCache();
-  const n = Number(cache.get(chave) || 0) + 1;
-  cache.put(chave, String(n), janelaSeg);
+  const k = chave + ":" + Math.floor(Date.now() / (janelaSeg * 1000));
+  const n = Number(cache.get(k) || 0) + 1;
+  cache.put(k, String(n), janelaSeg);
   return n;
 }
 
@@ -94,128 +99,139 @@ function resposta(obj) {
    doPost — ponto de entrada para pedidos e avaliações
    ================================================================ */
 function doPost(e) {
+  let email = null; // enviado depois de liberar o lock, para não segurar a fila
+  let saida;
   const lock = LockService.getScriptLock();
   try {
-    lock.waitLock(20000);
-    if (!e || !e.postData || !e.postData.contents || e.postData.contents.length > 20000) {
-      return resposta({ok: false});
-    }
-    const d  = JSON.parse(e.postData.contents);
-    if (!d || typeof d !== "object") return resposta({ok: false});
-
-    // Honeypot: campo invisível no site. Gente de verdade deixa vazio.
-    if (d.site) return resposta({ok: false});
-
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-
-    // ---- AVALIAÇÃO (estrelinhas pós-pedido) ----
-    if (d.tipo === 'avaliacao') {
-      const estrelas = Number(d.estrelas);
-      if (!Number.isInteger(estrelas) || estrelas < 1 || estrelas > 5) return resposta({ok: false});
-      if (contar("avaliacoes", 600) > LIMITE_PEDIDOS_10MIN) return resposta({ok: false});
-
-      const av = {
-        pedido:     limpar(d.pedido, 20),
-        estrelas:   estrelas,
-        comentario: limpar(d.comentario, 300),
-        nome:       limpar(d.nome, 80)
-      };
-      const abaAv = ss.getSheetByName('Avaliações') || criarAbaAvaliacoes(ss);
-      abaAv.appendRow([new Date(), av.pedido, av.estrelas, av.comentario, av.nome].map(celulaSegura));
-
-      // Alerta por e-mail se nota <= 2
-      const dest = emailsAviso();
-      if (dest && estrelas <= 2 && contar("emails", 3600) <= LIMITE_EMAILS_HORA) {
-        try {
-          MailApp.sendEmail({
-            to: dest,
-            subject: 'Avaliação baixa: ' + (av.nome || 'cliente') + ' deu ' + estrelas + ' estrela(s)',
-            htmlBody: montarHtmlAlerta(av)
-          });
-        } catch (mailErr) {
-          console.warn('Falha ao enviar alerta de avaliação: ' + mailErr);
-        }
-      }
-      return resposta({ok: true});
-    }
-
-    // ---- PEDIDO (fluxo normal) ----
-    const p = {
-      nome:           limpar(d.nome, 80),
-      whatsapp:       limpar(d.whatsapp, 20),
-      perfil:         "Cliente externo",
-      personalizacao: limpar(d.personalizacao, 1000)
-    };
-    const digitos = p.whatsapp.replace(/\D/g, "");
-    if (p.nome.length < 2 || digitos.length < 10 || digitos.length > 11) return resposta({ok: false});
-
-    const qtds = PRODUTOS.map(function(prod) {
-      const q = Math.floor(Number(d[prod[0]]) || 0);
-      return Math.min(Math.max(q, 0), QTD_MAX);
-    });
-    const total = PRODUTOS.reduce(function(soma, prod, i) { return soma + qtds[i] * prod[2]; }, 0);
-    if (total <= 0) return resposta({ok: false});
-
-    // Texto dos itens vem do site (inclui a personalização de cada item).
-    // Só vai para exibição; quantidades e total usam os números validados acima.
-    p.itens = limpar(d.itens, 2000);
-
-    if (contar("pedidos", 600) > LIMITE_PEDIDOS_10MIN) return resposta({ok: false});
-
-    let aba = ss.getSheetByName(ABA);
-    if (!aba) {
-      aba = ss.insertSheet(ABA);
-      const cab = ["Nº Pedido","Data/Hora","Nome","WhatsApp","Quem pediu","Itens do pedido","Total (R$)","Observações / Arte"]
-        .concat(PRODUTOS.map(function(prod) { return prod[1]; }))
-        .concat(["Status"]);
-      aba.appendRow(cab);
-      aba.getRange(1, 1, 1, cab.length).setFontWeight("bold").setBackground("#5E2A86").setFontColor("#ffffff");
-      aba.setFrozenRows(1);
-      aba.setColumnWidth(1, 90);
-      aba.setColumnWidth(6, 280);
-      aba.setColumnWidth(8, 220);
-    }
-
-    const pedido = proximoNumeroPedido();
-
-    const linha = [
-      pedido,
-      new Date(),
-      p.nome,
-      p.whatsapp,
-      p.perfil,
-      p.itens,
-      total,
-      p.personalizacao
-    ].concat(qtds)
-     .concat(["Novo"])
-     .map(celulaSegura);
-
-    aba.appendRow(linha);
-
-    // E-mail de aviso (HTML formatado)
-    const dest = emailsAviso();
-    if (dest && contar("emails", 3600) <= LIMITE_EMAILS_HORA) {
-      try {
-        const itensArr = p.itens.split(' | ').filter(Boolean);
-        MailApp.sendEmail({
-          to: dest,
-          subject: 'Pedido ' + pedido + ': ' + (p.nome || 'sem nome') + ' (R$' + total + ')',
-          body: montarTextoPedido(pedido, p, total, itensArr),
-          htmlBody: montarHtmlPedido(pedido, p, total, itensArr)
-        });
-      } catch (mailErr) {
-        console.warn("Falha ao enviar e-mail de aviso: " + mailErr);
-      }
-    }
-
-    return resposta({ok: true, pedido: pedido});
+    lock.waitLock(10000);
+    saida = processar(e, function(msg) { email = msg; });
   } catch (err) {
     console.error(err);
-    return resposta({ok: false});
+    saida = {ok: false};
   } finally {
     lock.releaseLock();
   }
+  if (email) {
+    try {
+      MailApp.sendEmail(email);
+    } catch (mailErr) {
+      console.warn("Falha ao enviar e-mail: " + mailErr);
+    }
+  }
+  return resposta(saida);
+}
+
+function processar(e, agendarEmail) {
+  if (!e || !e.postData || !e.postData.contents || e.postData.contents.length > 20000) {
+    return {ok: false};
+  }
+  const d = JSON.parse(e.postData.contents);
+  if (!d || typeof d !== "object") return {ok: false};
+
+  // Honeypot: campo invisível no site. Gente de verdade deixa vazio.
+  if (d.hp_eba) return {ok: false};
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const dest = emailsAviso();
+
+  // ---- AVALIAÇÃO (estrelinhas pós-pedido) ----
+  if (d.tipo === 'avaliacao') {
+    const estrelas = Number(d.estrelas);
+    if (!Number.isInteger(estrelas) || estrelas < 1 || estrelas > 5) return {ok: false};
+    if (contar("avaliacoes", 600) > LIMITE_AVALIACOES_10MIN) return {ok: false};
+
+    const av = {
+      pedido:     limpar(d.pedido, 20),
+      estrelas:   estrelas,
+      comentario: limpar(d.comentario, 300),
+      nome:       limpar(d.nome, 80)
+    };
+    const abaAv = ss.getSheetByName('Avaliações') || criarAbaAvaliacoes(ss);
+    abaAv.appendRow([new Date(), av.pedido, av.estrelas, av.comentario, av.nome].map(celulaSegura));
+
+    // Alerta por e-mail se nota <= 2 (cota própria, não consome a dos pedidos)
+    if (dest && estrelas <= 2 && contar("alertas", 3600) <= LIMITE_ALERTAS_HORA) {
+      agendarEmail({
+        to: dest,
+        subject: 'Avaliação baixa: ' + (av.nome || 'cliente') + ' deu ' + estrelas + ' estrela(s)',
+        htmlBody: montarHtmlAlerta(av)
+      });
+    }
+    return {ok: true};
+  }
+
+  // ---- PEDIDO (fluxo normal) ----
+  const p = {
+    nome:           limpar(d.nome, 80),
+    whatsapp:       limpar(d.whatsapp, 20),
+    perfil:         "Cliente externo",
+    personalizacao: limpar(d.personalizacao, 1000)
+  };
+  const digitos = p.whatsapp.replace(/\D/g, "");
+  if (p.nome.length < 2 || digitos.length < 10 || digitos.length > 11) return {ok: false};
+
+  const qtds = PRODUTOS.map(function(prod) {
+    const q = Math.floor(Number(d[prod[0]]) || 0);
+    return Math.min(Math.max(q, 0), QTD_MAX);
+  });
+  const total = PRODUTOS.reduce(function(soma, prod, i) { return soma + qtds[i] * prod[2]; }, 0);
+  if (total <= 0) return {ok: false};
+
+  // Lista de itens montada aqui, a partir das quantidades validadas. A única
+  // parte que vem do cliente é a personalização de cada item (p_<produto>).
+  const itensArr = [];
+  PRODUTOS.forEach(function(prod, i) {
+    if (!qtds[i]) return;
+    let linha = qtds[i] + "x " + prod[1] + " (R$" + (qtds[i] * prod[2]) + ")";
+    const perso = limpar(d["p_" + prod[0].slice(2)], 120);
+    if (perso) linha += " [" + perso + "]";
+    itensArr.push(linha);
+  });
+  p.itens = itensArr.join(" | ");
+
+  if (contar("pedidos", 600) > LIMITE_PEDIDOS_10MIN) return {ok: false};
+
+  let aba = ss.getSheetByName(ABA);
+  if (!aba) {
+    aba = ss.insertSheet(ABA);
+    const cab = ["Nº Pedido","Data/Hora","Nome","WhatsApp","Quem pediu","Itens do pedido","Total (R$)","Observações / Arte"]
+      .concat(PRODUTOS.map(function(prod) { return prod[1]; }))
+      .concat(["Status"]);
+    aba.appendRow(cab);
+    aba.getRange(1, 1, 1, cab.length).setFontWeight("bold").setBackground("#5E2A86").setFontColor("#ffffff");
+    aba.setFrozenRows(1);
+    aba.setColumnWidth(1, 90);
+    aba.setColumnWidth(6, 280);
+    aba.setColumnWidth(8, 220);
+  }
+
+  const pedido = proximoNumeroPedido();
+
+  const linha = [
+    pedido,
+    new Date(),
+    p.nome,
+    p.whatsapp,
+    p.perfil,
+    p.itens,
+    total,
+    p.personalizacao
+  ].concat(qtds)
+   .concat(["Novo"])
+   .map(celulaSegura);
+
+  aba.appendRow(linha);
+
+  if (dest && contar("emails", 3600) <= LIMITE_EMAILS_PEDIDO_HORA) {
+    agendarEmail({
+      to: dest,
+      subject: 'Pedido ' + pedido + ': ' + p.nome + ' (R$' + total + ')',
+      body: montarTextoPedido(pedido, p, total, itensArr),
+      htmlBody: montarHtmlPedido(pedido, p, total, itensArr)
+    });
+  }
+
+  return {ok: true, pedido: pedido, total: total};
 }
 
 /* ================================================================
@@ -376,9 +392,7 @@ function testarGravacao() {
   doPost({postData:{contents:JSON.stringify({
     nome: "Teste da Silva",
     whatsapp: "(51) 99999-9999",
-    perfil: "Cliente externo",
-    itens: "2x Caneca (R$40) | 1x Colar Miçanga (R$15) [rosa, nome Ana]",
-    total: 55,
+    p_colar: "rosa, nome Ana",
     personalizacao: "Caneca com arte do curso",
     q_caneca: 2,
     q_colar: 1

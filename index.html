@@ -673,7 +673,7 @@ body.cart-lock{overflow:hidden}
         <div class="fld">
           <label for="nome">Nome completo <span class="r">*</span></label>
           <input type="text" id="nome" placeholder="Seu nome" autocomplete="name">
-          <div class="err" id="eNome">Preencha seu nome.</div>
+          <div class="err" id="eNome">Preencha seu nome completo.</div>
         </div>
         <div class="fld">
           <label for="fone">WhatsApp <span class="r">*</span></label>
@@ -681,7 +681,7 @@ body.cart-lock{overflow:hidden}
           <div class="err" id="eFone">Coloque um WhatsApp v&aacute;lido.</div>
         </div>
       </div>
-      <div class="hp" aria-hidden="true"><label for="site">Deixe em branco</label><input type="text" id="site" name="site" tabindex="-1" autocomplete="off"></div>
+      <div class="hp" aria-hidden="true"><label for="hp_eba">Deixe em branco</label><input type="text" id="hp_eba" name="hp_eba" tabindex="-1" autocomplete="off"></div>
       <p class="priv">Seu nome e WhatsApp s&atilde;o usados s&oacute; para combinar este pedido. Ficam com a equipe EBA, n&atilde;o s&atilde;o repassados a ningu&eacute;m e s&atilde;o apagados quando o projeto terminar.</p>
     </div>
   </section>
@@ -838,6 +838,7 @@ const P = [
   {id:"pulseira",         nm:"Pulseira de Miçanga", desc:"personalizável", pr:12, icon:ic.pulseira, perso:"Cores / nome"}
 ];
 
+const QTD_MAX=50; // mesmo limite do Apps Script
 const qtd={},perso={};
 P.forEach(p=>{qtd[p.id]=0;perso[p.id]=""});
 
@@ -875,7 +876,7 @@ P.forEach(p=>{
 function mv(id,d){sQ(id,(qtd[id]||0)+d);if(d>0)bump(id)}
 function bump(id){const b=document.getElementById('b-'+id);if(!b)return;b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}
 function sQ(id,v){
-  v=Math.max(0,parseInt(v)||0);qtd[id]=v;
+  v=Math.min(QTD_MAX,Math.max(0,parseInt(v)||0));qtd[id]=v;
   document.getElementById('q-'+id).value=v;
   document.getElementById('b-'+id).textContent=v;
   document.getElementById('c-'+id).classList.toggle('on',v>0);
@@ -1008,9 +1009,9 @@ function valida(){
   let ok=true;
   const nome=document.getElementById('nome').value.trim();
   const fone=document.getElementById('fone').value.replace(/\D/g,'');
-  document.getElementById('eNome').style.display=nome?'none':'block';
+  document.getElementById('eNome').style.display=nome.length>=2?'none':'block';
   document.getElementById('eFone').style.display=fone.length>=10?'none':'block';
-  if(!nome||fone.length<10)ok=false;
+  if(nome.length<2||fone.length<10)ok=false;
   return ok;
 }
 
@@ -1054,6 +1055,7 @@ document.getElementById('btn').addEventListener('click',async function(){
   let t=0,linhas=[];const payload={};
   P.forEach(p=>{
     payload['q_'+p.id]=qtd[p.id];
+    if(qtd[p.id]>0&&perso[p.id])payload['p_'+p.id]=perso[p.id].trim();
     if(qtd[p.id]>0){
       t+=qtd[p.id]*p.pr;
       let s=`${qtd[p.id]}x ${p.nm} (R$${qtd[p.id]*p.pr})`;
@@ -1066,15 +1068,18 @@ document.getElementById('btn').addEventListener('click',async function(){
   payload.whatsapp=document.getElementById('fone').value.trim();
   payload.perfil='Cliente externo';
   payload.personalizacao=document.getElementById('obs').value.trim();
+  // itens/total: só o Apps Script antigo usa; o novo recalcula tudo.
   payload.itens=linhas.join(' | ');
   payload.total=t;
-  payload.site=document.getElementById('site').value;
+  payload.hp_eba=document.getElementById('hp_eba').value;
 
   // Envia e LE a resposta (sem no-cors). text/plain evita preflight de CORS.
-  // Até 15 s; passou disso, segue pelo WhatsApp com o pedido "a confirmar".
-  const data=await postScript(payload,15000);
+  // Até 20 s; passou disso, segue pelo WhatsApp com o pedido "a confirmar".
+  const data=await postScript(payload,20000);
   clearTimeout(aviso);
   const pedido=(data&&data.ok&&data.pedido)?data.pedido:null;
+  // Vale o total calculado pelo servidor (preços oficiais), se ele devolver.
+  if(pedido&&Number(data.total)>0)t=Number(data.total);
 
   // Monta a mensagem do WhatsApp (com numero real ou "a confirmar")
   const numero=pedido||'(a confirmar)';

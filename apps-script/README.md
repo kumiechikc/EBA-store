@@ -8,7 +8,7 @@ Código do Google Apps Script que recebe pedidos e avaliações do site e grava 
 2. Vá em **Extensões > Apps Script**.
 3. Apague o conteúdo do arquivo `Code.gs` e cole o conteúdo de `Code.gs` deste repositório.
 4. Salve (Ctrl+S).
-5. **Configurações do projeto (engrenagem) > Propriedades do script:** crie `EMAIL_AVISO` com **um** e-mail. Os e-mails não ficam no código porque o repositório é público.
+5. **Configurações do projeto (engrenagem) > Propriedades do script:** crie `EMAIL_AVISO` com os e-mails da equipe separados por vírgula (ou o endereço de um Google Grupo, que gasta menos cota). Os e-mails não ficam no código porque o repositório é público.
 6. Rode a função **`montarPlanilha`** uma vez (menu Executar > montarPlanilha) e autorize o acesso.
 7. Deploy:
    - **Primeira vez:** Implantar > Nova implantação > Tipo: App da Web. Executar como: **eu**. Acesso: **qualquer pessoa**. Copie a URL para `SCRIPT_URL` no `index.html`.
@@ -29,8 +29,9 @@ Código do Google Apps Script que recebe pedidos e avaliações do site e grava 
 - **Sem `doGet`:** a URL pública só grava, não devolve dados. Não crie um `doGet`.
 - **Fórmulas neutralizadas:** texto que começa com `= + - @` ganha um `'` na frente, para não virar fórmula na planilha.
 - **HTML escapado** em tudo que o cliente digita e aparece nos e-mails.
-- **Total recalculado** a partir das quantidades (máx. 50 por item) e dos preços de `PRODUTOS`. **Se mudar um preço no site, mude aqui também.**
-- **Anti-spam:** campo invisível (`site`) que só robô preenche. Acima de 15 pedidos em 10 min, o script recusa e o site manda o cliente finalizar pelo WhatsApp. Acima de 12 e-mails por hora, o pedido é gravado mas o e-mail não é enviado.
+- **Total e lista de itens montados no servidor** a partir das quantidades (máx. 50 por item) e dos preços de `PRODUTOS`. O site usa o total devolvido pelo script no Pix e no WhatsApp. **Se mudar um preço, mude aqui e no `index.html`.**
+- O e-mail é enviado depois de liberar o lock, para pedidos simultâneos não ficarem esperando o Gmail.
+- **Anti-spam:** campo invisível (`hp_eba`) que só robô preenche. Acima de 30 pedidos em 10 min, o script recusa e o site manda o cliente finalizar pelo WhatsApp. Acima de 20 e-mails de pedido por hora, o pedido é gravado mas o e-mail não é enviado. Alertas de avaliação baixa têm cota própria (3 por hora), para que avaliações falsas não consumam os avisos de pedido.
 - **Nº do pedido sequencial** (`EBA-0001`, `EBA-0002`...), guardado na propriedade `ULTIMO_PEDIDO`.
 - Erros não devolvem detalhes para o navegador; ficam no log de execuções do Apps Script.
 
