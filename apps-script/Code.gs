@@ -500,7 +500,7 @@ function criarAbaManual(ss, nome, cols, cor) {
   const linhaTotal = LINHAS_MANUAIS + 2;
   aba.getRange(linhaTotal, 6).setValue("TOTAL").setFontWeight("bold");
   aba.getRange(linhaTotal, 7)
-     .setFormula('=SUM(G2:G' + (LINHAS_MANUAIS + 1) + ')')
+     .setFormula(somaCanal(null, LINHAS_MANUAIS + 1))
      .setFontWeight("bold").setNumberFormat('R$ #,##0.00').setBackground("#fff3d6");
 }
 
@@ -514,10 +514,10 @@ function montarResumo(ss) {
   // Vendas por canal
   const linhas = [
     ["Canal", "Total Arrecadado (R$)"],
-    ["Pedidos do Site", "=SUM('Pedidos do Site'!G2:G)"],
-    ["Brechó",          "=SUM('Brechó'!G2:G" + (LINHAS_MANUAIS + 1) + ")"],
-    ["Bijus",           "=SUM('Bijus'!G2:G" + (LINHAS_MANUAIS + 1) + ")"],
-    ["Acessórios",      "=SUM('Acessórios'!G2:G" + (LINHAS_MANUAIS + 1) + ")"]
+    ["Pedidos do Site", "=SUM(INDIRECT(\"'Pedidos do Site'!G2:G\"))"],
+    ["Brechó",          somaCanal("Brechó",     LINHAS_MANUAIS + 1)],
+    ["Bijus",           somaCanal("Bijus",      LINHAS_MANUAIS + 1)],
+    ["Acessórios",      somaCanal("Acessórios", LINHAS_MANUAIS + 1)]
   ];
   aba.getRange(3, 1, linhas.length, 2).setValues(linhas);
   aba.getRange(3, 1, 1, 2).setFontWeight("bold").setBackground("#5E2A86").setFontColor("#fff");
@@ -530,19 +530,29 @@ function montarResumo(ss) {
   aba.getRange("A10").setValue("Avaliações dos clientes")
      .setFontSize(14).setFontWeight("bold").setFontColor("#5E2A86");
   aba.getRange("A11").setValue("Total de avaliações");
-  aba.getRange("B11").setFormula("=COUNTA('Avaliações'!A2:A)");
+  aba.getRange("B11").setFormula("=COUNTA(INDIRECT(\"'Avaliações'!A2:A\"))");
   aba.getRange("A12").setValue("Média de estrelas");
-  aba.getRange("B12").setFormula('=IFERROR(AVERAGE(\'Avaliações\'!C2:C);"-")');
+  aba.getRange("B12").setFormula('=IFERROR(AVERAGE(INDIRECT("\'Avaliações\'!C2:C"));"-")');
   aba.getRange("A13").setValue("Avaliações ≤ 2★");
-  aba.getRange("B13").setFormula('=COUNTIF(\'Avaliações\'!C2:C;"<=2")');
+  aba.getRange("B13").setFormula('=COUNTIF(INDIRECT("\'Avaliações\'!C2:C");"<=2")');
   aba.getRange("A14").setValue("Avaliações ≥ 4★");
-  aba.getRange("B14").setFormula('=COUNTIF(\'Avaliações\'!C2:C;">=4")');
+  aba.getRange("B14").setFormula('=COUNTIF(INDIRECT("\'Avaliações\'!C2:C");">=4")');
 
   aba.getRange("A11:A14").setFontColor("#8b7c97");
   aba.getRange("B12").setNumberFormat('0.0');
 
   aba.setColumnWidth(1, 200);
   aba.setColumnWidth(2, 180);
+}
+
+// Soma a coluna Total (G) de uma aba manual, ignorando linhas marcadas como
+// "TOTAL" na coluna F (subtotais feitos à mão não entram duas vezes).
+// Com nome de aba, usa INDIRECT para a fórmula não virar #REF! se a aba
+// for apagada e criada de novo.
+function somaCanal(nomeAba, ultimaLinha) {
+  if (!nomeAba) return '=SUMIF(F2:F' + ultimaLinha + ';"<>TOTAL";G2:G' + ultimaLinha + ')';
+  const ref = function(col) { return 'INDIRECT("\'' + nomeAba + '\'!' + col + '2:' + col + ultimaLinha + '")'; };
+  return '=SUMIF(' + ref("F") + ';"<>TOTAL";' + ref("G") + ')';
 }
 
 function larguraPadrao(aba, n) {
