@@ -800,6 +800,7 @@ async function copiarPix(){
   const btn=document.getElementById('pixCopyBtn');
   try{
     await navigator.clipboard.writeText(PIX_ULTIMO_CODIGO);
+    metEvento('pix');
     btn.textContent='Código copiado!';
   }catch(e){
     btn.textContent='Toque e segure no QR para copiar';
@@ -947,9 +948,41 @@ async function postScript(payload,ms){
       headers:{'Content-Type':'text/plain;charset=utf-8'},
       body:JSON.stringify(payload)});
     return await resp.json();
-  }catch(e){return null}
+  }catch(e){return {erro:e&&e.name==='AbortError'?'timeout':'erro'}}
   finally{clearTimeout(timer)}
 }
+
+/* ===== MÉTRICAS DO FUNIL =====
+   Mede quanto o cliente espera até o pedido ser registrado e o que ele faz
+   no modal. Vai para a aba "Métricas" (tipo:"metrica") quando a página fica
+   oculta: foi pro WhatsApp, trocou de app ou fechou. Sem nome nem telefone.
+   Cada saída pode gerar uma linha nova (envio 1, 2, 3) com a mesma sessão;
+   a linha de envio 1 mostra o que o cliente tinha feito ao sair pela 1ª vez. */
+const MET={sessao:'',t0:0,ms:0,msSrv:null,res:'',ev:[],envios:0,ultimo:''};
+function metEvento(e){if(MET.t0&&MET.ev.indexOf(e)<0)MET.ev.push(e)}
+function enviarMetrica(){
+  if(!MET.t0||MET.envios>=3)return;
+  const assinatura=(MET.res||'pendente')+'|'+MET.ev.join(',');
+  if(assinatura===MET.ultimo)return;
+  MET.ultimo=assinatura;MET.envios++;
+  try{
+    fetch(SCRIPT_URL,{method:'POST',keepalive:true,
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({
+        tipo:'metrica',
+        sessao:MET.sessao,
+        pedido:PEDIDO_ATUAL,
+        resultado:MET.res||'pendente',
+        ms_registro:MET.res?MET.ms:Math.round(performance.now()-MET.t0),
+        ms_servidor:MET.msSrv,
+        eventos:MET.ev.join(','),
+        movel:/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent),
+        envio:MET.envios
+      })}).catch(()=>{});
+  }catch(e){}
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')enviarMetrica()});
+window.addEventListener('pagehide',enviarMetrica);
 
 /* ===== AVALIAÇÃO (estrelinhas) =====
    Envia para o mesmo Apps Script da planilha um payload com tipo:"avaliacao",
@@ -987,6 +1020,7 @@ async function enviarAvaliacao(){
   if(!RATE_ESTRELAS)return;
   const btn=document.getElementById('rateSend');
   btn.disabled=true;
+  metEvento('avaliou');
   // Não espera a resposta do Google: agradece na hora e a nota segue em
   // segundo plano (keepalive mantém o envio mesmo se a aba for fechada).
   try{
@@ -1050,6 +1084,9 @@ function montaMsg(numero,nome,itens,total){
 document.getElementById('btn').addEventListener('click',async function(){
   if(!valida()){window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});return}
   const b=this;b.disabled=true;b.textContent='Registrando pedido...';
+  Object.assign(MET,{sessao:Math.random().toString(36).slice(2,12),t0:performance.now(),
+    ms:0,msSrv:null,res:'',ev:[],envios:0,ultimo:''});
+  PEDIDO_ATUAL='';
   const aviso=setTimeout(()=>{b.textContent='Só mais um pouquinho...'},4000);
 
   let t=0,linhas=[];const payload={};
@@ -1078,6 +1115,9 @@ document.getElementById('btn').addEventListener('click',async function(){
   const data=await postScript(payload,20000);
   clearTimeout(aviso);
   const pedido=(data&&data.ok&&data.pedido)?data.pedido:null;
+  MET.ms=Math.round(performance.now()-MET.t0);
+  MET.res=pedido?'ok':(data&&data.erro==='timeout'?'timeout':'erro');
+  if(data&&Number(data.ms_servidor)>0)MET.msSrv=Number(data.ms_servidor);
   // Vale o total calculado pelo servidor (preços oficiais), se ele devolver.
   if(pedido&&Number(data.total)>0)t=Number(data.total);
 
@@ -1100,12 +1140,14 @@ document.getElementById('btn').addEventListener('click',async function(){
   }
   mostrarPix(t);
   document.getElementById('modal').classList.add('show');
+  metEvento('modal');
 
   // Tenta abrir o WhatsApp sozinho; se o navegador bloquear, o botao do modal resolve.
-  try{window.open(url,'_blank');}catch(e){}
+  try{if(window.open(url,'_blank'))metEvento('wa_auto');}catch(e){}
 
   b.disabled=false;b.textContent='Enviar pedido';
 });
+document.getElementById('mWa').addEventListener('click',()=>metEvento('wa_clique'));
 upd();
 </script>
 </body>
