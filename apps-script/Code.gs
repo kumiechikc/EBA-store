@@ -1,7 +1,7 @@
 /**
  * EBA · Eco Bazar — Apps Script unificado
  * ========================================
- * doPost()          → recebe pedidos e avaliações do site
+ * doPost()          → recebe pedidos, avaliações e métricas do site
  * montarPlanilha()  → organiza a planilha (rodar 1× após colar o código)
  *
  * Deploy: Extensões > Apps Script > Implantar > Gerenciar implantações >
@@ -42,6 +42,7 @@ const PRODUTOS = [
 const QTD_MAX = 50;                  // por produto, por pedido (o site usa o mesmo limite)
 const LIMITE_PEDIDOS_10MIN = 30;     // acima disso o site recebe erro e manda pelo WhatsApp
 const LIMITE_AVALIACOES_10MIN = 30;
+const LIMITE_METRICAS_10MIN = 120;   // até 3 por cliente (cada saída da página)
 const LIMITE_EMAILS_PEDIDO_HORA = 20; // acima disso grava, mas não manda e-mail (poupa a cota)
 const LIMITE_ALERTAS_HORA = 3;        // alertas de avaliação baixa têm cota separada
 
@@ -99,6 +100,7 @@ function resposta(obj) {
    doPost — ponto de entrada para pedidos e avaliações
    ================================================================ */
 function doPost(e) {
+  const inicio = Date.now();
   let email = null; // enviado depois de liberar o lock, para não segurar a fila
   let saida;
   const lock = LockService.getScriptLock();
@@ -118,6 +120,9 @@ function doPost(e) {
       console.warn("Falha ao enviar e-mail: " + mailErr);
     }
   }
+  // Tempo total do lado do Google (fila do lock + planilha + e-mail). O site
+  // devolve esse número na métrica, para separar demora do Google da rede.
+  if (saida && saida.pedido) saida.ms_servidor = Date.now() - inicio;
   return resposta(saida);
 }
 
@@ -157,6 +162,29 @@ function processar(e, agendarEmail) {
         htmlBody: montarHtmlAlerta(av)
       });
     }
+    return {ok: true};
+  }
+
+  // ---- MÉTRICA (tempo de registro e o que o cliente fez no modal) ----
+  if (d.tipo === 'metrica') {
+    if (contar("metricas", 600) > LIMITE_METRICAS_10MIN) return {ok: false};
+    const resultado = ["ok", "erro", "timeout", "pendente"].indexOf(d.resultado) >= 0 ? d.resultado : "";
+    const sessao = /^[a-z0-9]{1,16}$/.test(String(d.sessao || "")) ? String(d.sessao) : "";
+    if (!resultado || !sessao) return {ok: false};
+    const ms = function(v) {
+      const n = Math.round(Number(v));
+      return Number.isFinite(n) && n >= 0 ? Math.min(n, 600000) : "";
+    };
+    const eventos = String(d.eventos || "").split(",").filter(function(ev) {
+      return ["modal", "wa_auto", "wa_clique", "pix", "avaliou"].indexOf(ev) >= 0;
+    }).join(",");
+    const envio = Math.min(Math.max(Math.floor(Number(d.envio) || 1), 1), 3);
+    const abaMet = ss.getSheetByName('Métricas') || criarAbaMetricas(ss);
+    abaMet.appendRow([
+      new Date(), sessao, limpar(d.pedido, 20), resultado,
+      ms(d.ms_registro), ms(d.ms_servidor), eventos,
+      d.movel === true ? "sim" : "não", envio
+    ].map(celulaSegura));
     return {ok: true};
   }
 
@@ -386,6 +414,25 @@ function criarAbaAvaliacoes(ss) {
 }
 
 /* ================================================================
+   CRIAR ABA MÉTRICAS (usada por doPost e montarPlanilha)
+   ================================================================ */
+const COLS_METRICAS = ["Data/Hora", "Sessão", "Nº Pedido", "Resultado",
+  "Espera do cliente (ms)", "Tempo no Google (ms)", "O que fez no modal",
+  "Celular", "Envio nº"];
+
+function criarAbaMetricas(ss) {
+  const aba = ss.insertSheet('Métricas');
+  aba.getRange(1, 1, 1, COLS_METRICAS.length).setValues([COLS_METRICAS])
+     .setFontWeight("bold").setBackground("#5E2A86").setFontColor("#ffffff")
+     .setVerticalAlignment("middle").setWrap(true);
+  aba.setFrozenRows(1);
+  aba.setColumnWidth(1, 140);
+  aba.setColumnWidth(7, 200);
+  aba.getRange(2, 1, 1000, 1).setNumberFormat('dd/mm/yyyy HH:mm:ss');
+  return aba;
+}
+
+/* ================================================================
    TESTE LOCAL — simula um pedido e uma avaliação
    ================================================================ */
 function testarGravacao() {
@@ -406,6 +453,20 @@ function testarAvaliacao() {
     estrelas: 5,
     comentario: 'Site muito bonito, adorei os produtos!',
     nome: 'Maria Teste'
+  })}});
+}
+
+function testarMetrica() {
+  doPost({postData:{contents:JSON.stringify({
+    tipo: 'metrica',
+    sessao: 'teste123',
+    pedido: 'EBA-TESTE',
+    resultado: 'ok',
+    ms_registro: 4200,
+    ms_servidor: 2900,
+    eventos: 'modal,wa_auto',
+    movel: true,
+    envio: 1
   })}});
 }
 
@@ -451,15 +512,20 @@ function montarPlanilha() {
     criarAbaAvaliacoes(ss);
   }
 
-  // 6. Resumo
+  // 6. Métricas do funil
+  if (!ss.getSheetByName('Métricas')) {
+    criarAbaMetricas(ss);
+  }
+
+  // 7. Resumo
   montarResumo(ss);
 
   // Ordenar abas
-  ordenar(ss, ["Resumo", "Pedidos do Site", "Brechó", "Bijus", "Acessórios", "Avaliações"]);
+  ordenar(ss, ["Resumo", "Pedidos do Site", "Brechó", "Bijus", "Acessórios", "Avaliações", "Métricas"]);
 
   SpreadsheetApp.getUi().alert(
     "✅ Planilha EBA organizada!\n\n"
-    + "Abas: Resumo · Pedidos do Site · Brechó · Bijus · Acessórios · Avaliações"
+    + "Abas: Resumo · Pedidos do Site · Brechó · Bijus · Acessórios · Avaliações · Métricas"
   );
 }
 
@@ -540,6 +606,32 @@ function montarResumo(ss) {
 
   aba.getRange("A11:A14").setFontColor("#8b7c97");
   aba.getRange("B12").setNumberFormat('0.0');
+
+  // Bloco do funil: só a linha "Envio nº = 1" de cada sessão, que mostra o
+  // que o cliente tinha feito quando saiu da página pela primeira vez.
+  const m = function(col) { return 'INDIRECT("\'Métricas\'!' + col + '2:' + col + '")'; };
+  const primeira = m("I") + '=1';
+  const n1 = 'COUNTIF(' + m("I") + ';1)';
+  const nOk = 'COUNTIFS(' + m("I") + ';1;' + m("D") + ';"ok")';
+  aba.getRange("A16").setValue("Tela de pedido (funil)")
+     .setFontSize(14).setFontWeight("bold").setFontColor("#5E2A86");
+  const funil = [
+    ["Pedidos acompanhados", '=' + n1],
+    ["Espera mediana até registrar (s)",
+      '=IFERROR(MEDIAN(FILTER(' + m("E") + ';' + primeira + ';' + m("D") + '<>"pendente"))/1000;"-")'],
+    ["Saiu antes de registrar",
+      '=IFERROR(COUNTIFS(' + m("I") + ';1;' + m("D") + ';"pendente")/' + n1 + ';"-")'],
+    ["Timeout ou erro",
+      '=IFERROR((COUNTIFS(' + m("I") + ';1;' + m("D") + ';"timeout")+COUNTIFS(' + m("I") + ';1;' + m("D") + ';"erro"))/' + n1 + ';"-")'],
+    ["Registrou e foi pro WhatsApp",
+      '=IFERROR(COUNTIFS(' + m("I") + ';1;' + m("D") + ';"ok";' + m("G") + ';"*wa_*")/' + nOk + ';"-")'],
+    ["Registrou e saiu sem agir",
+      '=IFERROR(COUNTIFS(' + m("I") + ';1;' + m("D") + ';"ok";' + m("G") + ';"modal")/' + nOk + ';"-")']
+  ];
+  aba.getRange(17, 1, funil.length, 2).setValues(funil);
+  aba.getRange(17, 1, funil.length, 1).setFontColor("#8b7c97");
+  aba.getRange("B18").setNumberFormat('0.0');
+  aba.getRange("B19:B22").setNumberFormat('0%');
 
   aba.setColumnWidth(1, 200);
   aba.setColumnWidth(2, 180);

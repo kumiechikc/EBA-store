@@ -18,6 +18,7 @@ O resto depende de configuração nas contas, e **só quem tem acesso a elas pod
 - [ ] **Implantar → Gerenciar implantações:**
   - Na implantação atual: lápis → Versão **"Nova versão"** → Implantar. A URL continua a mesma, então não precisa mexer no `index.html`.
   - **Arquivar todas as outras implantações.** URLs antigas continuam aceitando pedidos com o código antigo, sem as proteções.
+- [ ] Rodar `montarPlanilha` de novo para criar a aba **"Métricas"** e o bloco "Tela de pedido (funil)" no Resumo. Sem isso as métricas do site não são gravadas (a aba é criada no primeiro envio, mas o Resumo fica sem o bloco).
 - [ ] Rodar `testarGravacao` no editor e conferir que apareceu uma linha `EBA-0001` em **"Pedidos do Site"**. Depois apague a linha de teste.
 - [ ] Se já existir uma aba chamada **"Pedidos"** com pedidos antigos: copie as linhas para "Pedidos do Site" e apague a aba "Pedidos". O código antigo gravava na aba errada, por isso o Resumo não somava os pedidos do site.
 - [ ] **Nunca** adicionar uma função `doGet` que devolva dados da planilha. A URL do script é pública (está no site).

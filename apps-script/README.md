@@ -18,11 +18,12 @@ Código do Google Apps Script que recebe pedidos e avaliações do site e grava 
 
 | Função | Descrição |
 |---|---|
-| `doPost(e)` | Recebe pedidos e avaliações do site via POST. Valida os campos, recalcula o total com os preços daqui, neutraliza fórmulas e grava em "Pedidos do Site" / "Avaliações". Manda e-mail para `EMAIL_AVISO` a cada pedido e alerta se a avaliação for ≤ 2 estrelas. |
-| `montarPlanilha()` | Organiza a planilha com abas: Resumo, Pedidos do Site, Brechó, Bijus, Acessórios, Avaliações. Roda uma vez. |
+| `doPost(e)` | Recebe pedidos, avaliações e métricas do site via POST. Valida os campos, recalcula o total com os preços daqui, neutraliza fórmulas e grava em "Pedidos do Site" / "Avaliações". Manda e-mail para `EMAIL_AVISO` a cada pedido e alerta se a avaliação for ≤ 2 estrelas. |
+| `montarPlanilha()` | Organiza a planilha com abas: Resumo, Pedidos do Site, Brechó, Bijus, Acessórios, Avaliações, Métricas. Roda uma vez. |
 | `testarGravacao()` | Simula um pedido de teste. |
 | `testarAvaliacao()` | Simula uma avaliação positiva (5 estrelas). |
 | `testarAvaliacaoBaixa()` | Simula uma avaliação baixa (2 estrelas) e dispara o e-mail de alerta. |
+| `testarMetrica()` | Simula uma métrica do funil e grava uma linha na aba "Métricas" (apague depois). |
 
 ## Proteções
 
@@ -41,3 +42,4 @@ Código do Google Apps Script que recebe pedidos e avaliações do site e grava 
 - **Pedidos do Site:** preenchida automaticamente pelo site
 - **Brechó / Bijus / Acessórios:** preenchidas manualmente pelos vendedores
 - **Avaliações:** estrelinhas dos clientes (automática)
+- **Métricas:** uma linha cada vez que o cliente sai da página depois de clicar em "Enviar pedido" (automática). Guarda quanto ele esperou até o pedido ser registrado (`ok`, `timeout`, `erro` ou `pendente` = saiu antes da resposta), o tempo gasto do lado do Google e o que fez no modal (`wa_auto`, `wa_clique`, `pix`, `avaliou`). Não guarda nome nem telefone. A mesma sessão pode ter até 3 linhas (envio 1, 2, 3); o Resumo usa só o envio 1. A rotina diária de monitoramento lê esta aba.
